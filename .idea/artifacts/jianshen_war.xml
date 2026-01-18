@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="jianshen:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>jianshen</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="gym-management.war">
+      <element id="artifact" artifact-name="jianshen:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -89,7 +89,8 @@
                 </div>
                 <div class="form-group" style="text-align: center">
                     <input type="radio" checked name="usertype" value="admin">管理员
-                    <input type="radio" name="usertype" value="student">学生
+                    <input type="radio" name="usertype" value="customer">客户
+                    <input type="radio" name="usertype" value="coach">教练
                 </div>
                 <div class="form-group">
                     <button class="btn btn-block btn-primary" type="button" onclick="login()">立即登录</button>
@@ -97,7 +98,9 @@
             </form>
             <hr>
             <div class="text-center">
-                <a href="${pageContext.request.contextPath}/student_register.jsp" class="text-primary">还没有账号？点击注册学生账号</a>
+                <a href="${pageContext.request.contextPath}/customer_register.jsp" class="text-primary">还没有账号？点击注册客户账号</a>
+                <br>
+                <a href="${pageContext.request.contextPath}/coach_register.jsp" class="text-primary">教练注册</a>
             </div>
         </div>
     </div>

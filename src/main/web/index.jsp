@@ -35,43 +35,30 @@
             <div class="card bg-primary">
               <div class="card-body clearfix">
                 <div class="pull-right">
-                  <p class="h6 text-white m-t-0">班级数</p>
-                  <p class="h3 text-white m-b-0 fa-1-5x" id="clazzCount">0</p>
+                  <p class="h6 text-white m-t-0">客户数</p>
+                  <p class="h3 text-white m-b-0 fa-1-5x" id="customerCount">0</p>
                 </div>
-                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-currency-cny fa-1-5x"></i></span> </div>
+                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-group fa-1-5x"></i></span> </div>
               </div>
             </div>
           </div>
-        </div>
-
 
           <div class="col-sm-6 col-lg-3">
             <div class="card bg-danger">
               <div class="card-body clearfix">
                 <div class="pull-right">
-                  <p class="h6 text-white m-t-0">学生总数</p>
-                  <p class="h3 text-white m-b-0 fa-1-5x"id="studentCount">0</p>
+                  <p class="h6 text-white m-t-0">教练数</p>
+                  <p class="h3 text-white m-b-0 fa-1-5x" id="coachCount">0</p>
                 </div>
-                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
-              </div>
-            </div>
-          </div>
-
-
-
-        <div class="row">
-
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header">
-                <h4>每周用户</h4>
-              </div>
-              <div class="card-body">
-                <canvas class="js-chartjs-bars"></canvas>
+                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-tie fa-1-5x"></i></span> </div>
               </div>
             </div>
           </div>
         </div>
+
+
+
+
       </div>
 
 
@@ -97,58 +84,16 @@
       dataType:"json",
       success:function (data) {
         if(data.success){
-          let studentCount=data.data.studentCount;
-          let clazzCount=data.data.clazzCount;
-          let clazzes=data.data.clazzes;
-          console.log(studentCount.clazzCount)
-          $("#studentCount").text(studentCount);
-          $("#clazzCount").text(clazzCount);
-
-          let l1=[],l2=[]
-          for (let i = 0; i <clazzes.length ; i++) {
-            l1.push(clazzes[i].name)
-            l2.push(clazzes[i].stuCount)
-          }
-          var $dashChartBarsCnt  = jQuery( '.js-chartjs-bars' )[0].getContext( '2d' )
-
-          var $dashChartBarsData = {
-            labels: l1,
-            datasets: [
-              {
-                label: '注册用户',
-                borderWidth: 1,
-                borderColor: 'rgba(0,0,0,0)',
-                backgroundColor: 'rgba(51,202,185,0.5)',
-                hoverBackgroundColor: "rgba(51,202,185,0.7)",
-                hoverBorderColor: "rgba(0,0,0,0)",
-                data: l2
-              }
-            ]
-          };
-
-
-          new Chart($dashChartBarsCnt, {
-            type: 'bar',
-            data: $dashChartBarsData,
-            options:{
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      min: 0,  //最小值
-                    },
-                    display: true
-                  }
-                ]
-              }
-            }
-          });
+          let customerCount=data.data.customerCount;
+          let coachCount=data.data.coachCount;
+          
+          $("#customerCount").text(customerCount);
+          $("#coachCount").text(coachCount);
         }else{
-          alert("失败")
+          alert("数据加载失败")
         }
       }
     })
-
 
     });
 

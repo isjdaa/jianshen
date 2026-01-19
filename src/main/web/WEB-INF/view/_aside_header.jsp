@@ -20,8 +20,8 @@
                 <li class="nav-item nav-item-has-subnav open">
                     <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i> 功能</a>
                     <ul class="nav nav-subnav">
-                        <li> <a href="${pageContext.request.contextPath}/student">客户信息</a> </li>
-                        <li> <a href="${pageContext.request.contextPath}/clazz">班级信息</a> </li>
+                        <li> <a href="${pageContext.request.contextPath}/customer">客户信息</a> </li>
+                        <li> <a href="${pageContext.request.contextPath}/coach">教练信息</a> </li>
                     </ul>
                 </li>
             </ul>

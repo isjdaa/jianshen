@@ -1,9 +1,11 @@
 package com.hello.servlet;
 
 import com.hello.entity.Admin;
-import com.hello.entity.Student;
+import com.hello.entity.Customer;
+import com.hello.entity.Coach;
 import com.hello.service.AdminService;
-import com.hello.service.StudentService;
+import com.hello.service.CustomerService;
+import com.hello.service.CoachService;
 import com.hello.utils.ApiResult;
 import com.hello.utils.MD5Util; // 新增导入MD5加密工具
 
@@ -17,7 +19,8 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     AdminService adminService = new AdminService();
-    StudentService studentService = new StudentService();
+    CustomerService customerService = new CustomerService();
+    CoachService coachService = new CoachService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,23 +51,41 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-        } else {
-            Student student = studentService.getBySno(username);
-            if (student == null) {
+        } else if (usertype.equals("customer")) {
+            Customer customer = customerService.getById(username);
+            if (customer == null) {
                 resp.getWriter().print(ApiResult.json(false, "用户不存在"));
                 return;
             }
-            // ============核心修改：仅这一行！学生密码做MD5加密后再对比============
-            if (student.getPassword().equals(MD5Util.md5Encode(password))) {
-                req.getSession().setAttribute("user", student);
-                req.getSession().setAttribute("role", "student");
+            // 客户密码做MD5加密后再对比
+            if (customer.getPassword().equals(MD5Util.md5Encode(password))) {
+                req.getSession().setAttribute("user", customer);
+                req.getSession().setAttribute("role", "customer");
                 resp.getWriter().print(ApiResult.json(true, "登陆成功"));
                 return;
             } else {
                 resp.getWriter().print(ApiResult.json(false, "密码错误"));
                 return;
             }
+        } else if (usertype.equals("coach")) {
+            Coach coach = coachService.getById(username);
+            if (coach == null) {
+                resp.getWriter().print(ApiResult.json(false, "用户不存在"));
+                return;
+            }
+            // 教练密码做MD5加密后再对比
+            if (coach.getPassword().equals(MD5Util.md5Encode(password))) {
+                req.getSession().setAttribute("user", coach);
+                req.getSession().setAttribute("role", "coach");
+                resp.getWriter().print(ApiResult.json(true, "登陆成功"));
+                return;
+            } else {
+                resp.getWriter().print(ApiResult.json(false, "密码错误"));
+                return;
+            }
+        } else {
+            resp.getWriter().print(ApiResult.json(false, "未知用户类型"));
+            return;
         }
-
     }
 }

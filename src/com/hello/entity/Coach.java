@@ -9,7 +9,9 @@ public class Coach {
     private String gender;//性别
     private Integer age;//年龄
     private String address;//详细地址
-
+    public String getSpecialty() {
+        return this.specialization;
+    }
     public String getId() {
         return id;
     }

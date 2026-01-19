@@ -92,6 +92,7 @@
                                             <th>专业特长</th>
                                             <th>年龄</th>
                                             <th>地址</th>
+                                            <th>密码</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
@@ -105,6 +106,7 @@
                                                 <td>${coach.specialization}</td>
                                                 <td>${coach.age}</td>
                                                 <td>${coach.address}</td>
+                                                <td>${coach.password}</td>
                                                 <td>
                                                     <a href="${pageContext.request.contextPath}/coach?r=edit&id=${coach.id}" class="btn btn-info btn-xs">编辑</a>
                                                     <a href="javascript:del('${coach.id}')" class="btn btn-danger btn-xs">删除</a>

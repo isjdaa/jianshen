@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -31,29 +32,68 @@
       <div class="container-fluid">
 
         <div class="row">
-          <div class="col-sm-6 col-lg-3">
-            <div class="card bg-primary">
-              <div class="card-body clearfix">
-                <div class="pull-right">
-                  <p class="h6 text-white m-t-0">客户数</p>
-                  <p class="h3 text-white m-b-0 fa-1-5x" id="customerCount">0</p>
+          <c:choose>
+            <c:when test="${sessionScope.role == 'admin'}">
+              <!-- 管理员显示统计信息 -->
+              <div class="col-sm-6 col-lg-3">
+                <div class="card bg-primary">
+                  <div class="card-body clearfix">
+                    <div class="pull-right">
+                      <p class="h6 text-white m-t-0">客户数</p>
+                      <p class="h3 text-white m-b-0 fa-1-5x" id="customerCount">0</p>
+                    </div>
+                    <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-group fa-1-5x"></i></span> </div>
+                  </div>
                 </div>
-                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-group fa-1-5x"></i></span> </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-sm-6 col-lg-3">
-            <div class="card bg-danger">
-              <div class="card-body clearfix">
-                <div class="pull-right">
-                  <p class="h6 text-white m-t-0">教练数</p>
-                  <p class="h3 text-white m-b-0 fa-1-5x" id="coachCount">0</p>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card bg-danger">
+                  <div class="card-body clearfix">
+                    <div class="pull-right">
+                      <p class="h6 text-white m-t-0">教练数</p>
+                      <p class="h3 text-white m-b-0 fa-1-5x" id="coachCount">0</p>
+                    </div>
+                    <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-tie fa-1-5x"></i></span> </div>
+                  </div>
                 </div>
-                <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account-tie fa-1-5x"></i></span> </div>
               </div>
-            </div>
-          </div>
+            </c:when>
+            <c:when test="${sessionScope.role == 'customer'}">
+              <!-- 客户显示预约功能 -->
+              <div class="col-sm-6 col-lg-6">
+                <div class="card bg-primary">
+                  <div class="card-body text-center">
+                    <h4 class="card-title">预约教练</h4>
+                    <p class="card-text">选择合适的教练进行预约</p>
+                    <a href="${pageContext.request.contextPath}/appointment/coach" class="btn btn-light">立即预约</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6 col-lg-6">
+                <div class="card bg-success">
+                  <div class="card-body text-center">
+                    <h4 class="card-title">预约课程</h4>
+                    <p class="card-text">查看并预约感兴趣的课程</p>
+                    <a href="${pageContext.request.contextPath}/appointment/course" class="btn btn-light">立即预约</a>
+                  </div>
+                </div>
+              </div>
+            </c:when>
+            <c:when test="${sessionScope.role == 'coach'}">
+              <!-- 教练显示我的预约 -->
+              <div class="col-sm-12 col-lg-6 offset-lg-3">
+                <div class="card bg-info">
+                  <div class="card-body text-center">
+                    <h4 class="card-title">我的预约</h4>
+                    <p class="card-text">查看客户对您的预约情况</p>
+                    <a href="${pageContext.request.contextPath}/appointment/my" class="btn btn-light">查看预约</a>
+                  </div>
+                </div>
+              </div>
+            </c:when>
+          </c:choose>
         </div>
 
 

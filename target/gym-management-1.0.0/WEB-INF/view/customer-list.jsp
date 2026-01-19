@@ -98,6 +98,7 @@
                                             <th>年龄</th>
                                             <th>会员类型</th>
                                             <th>余额</th>
+                                            <th>密码</th>
                                             <th>教练</th>
                                             <th>操作</th>
                                         </tr>
@@ -113,6 +114,7 @@
                                                 <td>${customer.age}</td>
                                                 <td>${customer.membershipType}</td>
                                                 <td>${customer.balance}</td>
+                                                <td>${customer.password}</td>
                                                 <td>${customer.coach != null ? customer.coach.name : ''}</td>
                                                 <td>
                                                     <a href="${pageContext.request.contextPath}/customer?r=edit&id=${customer.id}" class="btn btn-info btn-xs">编辑</a>

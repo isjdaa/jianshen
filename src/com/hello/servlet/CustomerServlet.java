@@ -27,6 +27,15 @@ public class CustomerServlet extends HttpServlet {
         req.setCharacterEncoding("utf-8");
         //查询参数
         String r=req.getParameter("r");
+        
+        // 只有管理员能访问客户信息页面
+        if(r == null || "add".equals(r) || "edit".equals(r)) {
+            boolean hasPermission = MyUtils.hasPermission(req, resp, false, "admin");
+            if (!hasPermission) {
+                return;
+            }
+        }
+        
         if(r == null){
             String current=req.getParameter("current");
             if(current==null){

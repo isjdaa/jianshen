@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!--左侧导航-->
 <aside class="lyear-layout-sidebar">
     <!-- logo -->
@@ -20,8 +21,20 @@
                 <li class="nav-item nav-item-has-subnav open">
                     <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i> 功能</a>
                     <ul class="nav nav-subnav">
-                        <li> <a href="${pageContext.request.contextPath}/customer">客户信息</a> </li>
-                        <li> <a href="${pageContext.request.contextPath}/coach">教练信息</a> </li>
+                        <%-- 根据用户角色显示不同的功能菜单 --%>
+                        <c:choose>
+                            <c:when test="${sessionScope.role == 'admin'}">
+                                <li> <a href="${pageContext.request.contextPath}/customer">客户信息</a> </li>
+                                <li> <a href="${pageContext.request.contextPath}/coach">教练信息</a> </li>
+                            </c:when>
+                            <c:when test="${sessionScope.role == 'customer'}">
+                                <li> <a href="${pageContext.request.contextPath}/appointment/coach">预约教练</a> </li>
+                                <li> <a href="${pageContext.request.contextPath}/appointment/course">预约课程</a> </li>
+                            </c:when>
+                            <c:when test="${sessionScope.role == 'coach'}">
+                                <li> <a href="${pageContext.request.contextPath}/appointment/my">我的预约</a> </li>
+                            </c:when>
+                        </c:choose>
                     </ul>
                 </li>
             </ul>

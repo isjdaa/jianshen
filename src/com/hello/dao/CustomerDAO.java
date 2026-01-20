@@ -41,10 +41,11 @@ public class CustomerDAO {
     public int insert(Customer customer) {
         JdbcHelper helper = new JdbcHelper();
         int res = helper.executeUpdate(
-            "insert into tb_customer values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "insert into tb_customer values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             customer.getId(), customer.getPassword(), customer.getName(), customer.getTele(),
             customer.getJoindate(), customer.getAge(), customer.getGender(), customer.getAddress(),
-            customer.getMembershipType(), customer.getExpiryDate(), customer.getBalance(), customer.getCoachId()
+            customer.getMembershipType(), customer.getExpiryDate(), customer.getBalance(), customer.getCoachId(),
+            customer.getAvatar()
         );
         helper.closeDB();
         return res;
@@ -99,6 +100,10 @@ public class CustomerDAO {
         if (customer.getCoachId() != null) {
             sql += " coach_id=?, ";
             params.add(customer.getCoachId());
+        }
+        if (customer.getAvatar() != null) {
+            sql += " avatar=?, ";
+            params.add(customer.getAvatar());
         }
         
         sql = sql.substring(0, sql.length() - 2);
@@ -167,6 +172,13 @@ public class CustomerDAO {
         customer.setExpiryDate(resultSet.getDate("expiry_date"));
         customer.setBalance(resultSet.getDouble("balance"));
         customer.setCoachId(resultSet.getString("coach_id"));
+        // 处理avatar字段可能不存在的情况
+        try {
+            customer.setAvatar(resultSet.getString("avatar"));
+        } catch (SQLException e) {
+            // 如果avatar字段不存在，忽略此异常
+            customer.setAvatar(null);
+        }
         return customer;
     }
 }

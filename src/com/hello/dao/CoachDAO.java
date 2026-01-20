@@ -41,9 +41,10 @@ public class CoachDAO {
     public int insert(Coach coach) {
         JdbcHelper helper = new JdbcHelper();
         int res = helper.executeUpdate(
-            "insert into tb_coach values(?, ?, ?, ?, ?, ?, ?, ?)",
+            "insert into tb_coach values(?, ?, ?, ?, ?, ?, ?, ?, ?)",
             coach.getId(), coach.getPassword(), coach.getName(), coach.getTele(),
-            coach.getSpecialization(), coach.getGender(), coach.getAge(), coach.getAddress()
+            coach.getSpecialization(), coach.getGender(), coach.getAge(), coach.getAddress(),
+            coach.getAvatar()
         );
         helper.closeDB();
         return res;
@@ -82,6 +83,10 @@ public class CoachDAO {
         if (coach.getAddress() != null) {
             sql += " address=?, ";
             params.add(coach.getAddress());
+        }
+        if (coach.getAvatar() != null) {
+            sql += " avatar=?, ";
+            params.add(coach.getAvatar());
         }
         
         sql = sql.substring(0, sql.length() - 2);
@@ -146,6 +151,13 @@ public class CoachDAO {
         coach.setGender(resultSet.getString("gender"));
         coach.setAge(resultSet.getInt("age"));
         coach.setAddress(resultSet.getString("address"));
+        // 处理avatar字段可能不存在的情况
+        try {
+            coach.setAvatar(resultSet.getString("avatar"));
+        } catch (SQLException e) {
+            // 如果avatar字段不存在，忽略此异常
+            coach.setAvatar(null);
+        }
         return coach;
     }
 }

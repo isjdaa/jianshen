@@ -9,6 +9,7 @@ public class Coach {
     private String gender;//性别
     private Integer age;//年龄
     private String address;//详细地址
+    private String avatar;//头像URL
     public String getSpecialty() {
         return this.specialization;
     }
@@ -76,6 +77,14 @@ public class Coach {
         this.address = address;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         return "Coach{" +
@@ -87,6 +96,7 @@ public class Coach {
                 ", gender='" + gender + '\'' +
                 ", age=" + age +
                 ", address='" + address + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }

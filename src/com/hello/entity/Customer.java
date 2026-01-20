@@ -16,6 +16,7 @@ public class Customer {
     private Double balance;//余额
     private String coachId;//教练编号
     private Coach coach;//教练信息
+    private String avatar;//头像URL
 
     public String getId() {
         return id;
@@ -121,6 +122,14 @@ public class Customer {
         this.coach = coach;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -136,6 +145,7 @@ public class Customer {
                 ", expiryDate=" + expiryDate +
                 ", balance=" + balance +
                 ", coachId='" + coachId + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }

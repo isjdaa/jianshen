@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%-- 声明外部变量，解决IDE警告 --%>
+<%--@elvariable id="appointmentPager" type="com.hello.utils.vo.PagerVO"--%>
+<%--@elvariable id="courseAppointmentPager" type="com.hello.utils.vo.PagerVO"--%>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -34,8 +37,8 @@
                                 <img class="img-avatar img-avatar-48" src="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" alt="">
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="javascript:void(0);"><i class="mdi mdi-account"></i> 我的资料</a></li>
-                                <li><a href="javascript:void(0);"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
+                                <li><a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 我的资料</a></li>
+                                <li><a href="${pageContext.request.contextPath}/password"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
                                 <li class="divider"></li>
                                 <li><a href="${pageContext.request.contextPath}/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
                             </ul>
@@ -78,33 +81,33 @@
                                                             <td>${appointment.appointmentDate}</td>
                                                             <td>${appointment.appointmentTime}</td>
                                                             <td>
-                                                                <c:choose>
-                                                                    <c:when test="${appointment.status == 'pending'}">
-                                                                        <span class="label label-warning">待确认</span>
-                                                                    </c:when>
-                                                                    <c:when test="${appointment.status == 'confirmed'}">
-                                                                        <span class="label label-success">已确认</span>
-                                                                    </c:when>
-                                                                    <c:when test="${appointment.status == 'completed'}">
-                                                                        <span class="label label-info">已完成</span>
-                                                                    </c:when>
-                                                                    <c:when test="${appointment.status == 'cancelled'}">
-                                                                        <span class="label label-danger">已取消</span>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <span class="label label-default">${appointment.status}</span>
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </td>
+                                                <c:choose>
+                                                    <c:when test="${appointment.status == 'pending' || appointment.status == '待确认'}">
+                                                        <span class="label label-warning">待确认</span>
+                                                    </c:when>
+                                                    <c:when test="${appointment.status == 'confirmed' || appointment.status == '已确认'}">
+                                                        <span class="label label-success">已确认</span>
+                                                    </c:when>
+                                                    <c:when test="${appointment.status == 'completed' || appointment.status == '已完成'}">
+                                                        <span class="label label-info">已完成</span>
+                                                    </c:when>
+                                                    <c:when test="${appointment.status == 'cancelled' || appointment.status == '已取消'}">
+                                                        <span class="label label-danger">已取消</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="label label-default">${appointment.status}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                                             <td>${appointment.remarks != null ? appointment.remarks : '-'}</td>
                                                             <td>${appointment.createTime}</td>
                                                             <td>
-                                                                <c:if test="${appointment.status == 'pending'}">
+                                                                <c:if test="${appointment.status == 'pending' || appointment.status == '待确认'}">
                                                                     <button class="btn btn-danger btn-sm" onclick="updateStatus('${appointment.id}', 'cancelled', 'appointment')">
                                                                         <i class="mdi mdi-calendar-remove"></i> 取消预约
                                                                     </button>
                                                                 </c:if>
-                                                                <c:if test="${appointment.status != 'pending'}">
+                                                                <c:if test="${appointment.status != 'pending' && appointment.status != '待确认'}">
                                                                     <button class="btn btn-default btn-sm" disabled>
                                                                         <i class="mdi mdi-calendar-check"></i> 已处理
                                                                     </button>
@@ -131,7 +134,7 @@
                                                     <li><a href="${pageContext.request.contextPath}/appointment/my?page=${appointmentPager.current - 1}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                                                 </c:if>
 
-                                                <c:forEach var="pageNum" begin="1" end="${appointmentPager.pages}">
+                                                <c:forEach var="pageNum" begin="1" end="${appointmentPager.totalPages}">
                                                     <c:if test="${pageNum >= appointmentPager.current - 2 && pageNum <= appointmentPager.current + 2}">
                                                         <li class="${pageNum == appointmentPager.current ? 'active' : ''}">
                                                             <a href="${pageContext.request.contextPath}/appointment/my?page=${pageNum}">${pageNum}</a>
@@ -139,12 +142,12 @@
                                                     </c:if>
                                                 </c:forEach>
 
-                                                <c:if test="${appointmentPager.current < appointmentPager.pages}">
+                                                <c:if test="${appointmentPager.current < appointmentPager.totalPages}">
                                                     <li><a href="${pageContext.request.contextPath}/appointment/my?page=${appointmentPager.current + 1}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                                                 </c:if>
                                             </ul>
                                         </nav>
-                                        <p class="text-muted">教练预约：共 ${appointmentPager.total} 条记录，第 ${appointmentPager.current}/${appointmentPager.pages} 页</p>
+                                        <p class="text-muted">教练预约：共 ${appointmentPager.total} 条记录，第 ${appointmentPager.current}/${appointmentPager.totalPages} 页</p>
                                     </div>
                                 </c:if>
                             </div>
@@ -237,7 +240,7 @@
                                                     <li><a href="${pageContext.request.contextPath}/appointment/my?page=${courseAppointmentPager.current - 1}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                                                 </c:if>
 
-                                                <c:forEach var="pageNum" begin="1" end="${courseAppointmentPager.pages}">
+                                                <c:forEach var="pageNum" begin="1" end="${courseAppointmentPager.totalPages}">
                                                     <c:if test="${pageNum >= courseAppointmentPager.current - 2 && pageNum <= courseAppointmentPager.current + 2}">
                                                         <li class="${pageNum == courseAppointmentPager.current ? 'active' : ''}">
                                                             <a href="${pageContext.request.contextPath}/appointment/my?page=${pageNum}">${pageNum}</a>
@@ -245,12 +248,12 @@
                                                     </c:if>
                                                 </c:forEach>
 
-                                                <c:if test="${courseAppointmentPager.current < courseAppointmentPager.pages}">
+                                                <c:if test="${courseAppointmentPager.current < courseAppointmentPager.totalPages}">
                                                     <li><a href="${pageContext.request.contextPath}/appointment/my?page=${courseAppointmentPager.current + 1}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                                                 </c:if>
                                             </ul>
                                         </nav>
-                                        <p class="text-muted">课程预约：共 ${courseAppointmentPager.total} 条记录，第 ${courseAppointmentPager.current}/${courseAppointmentPager.pages} 页</p>
+                                        <p class="text-muted">课程预约：共 ${courseAppointmentPager.total} 条记录，第 ${courseAppointmentPager.current}/${courseAppointmentPager.totalPages} 页</p>
                                     </div>
                                 </c:if>
                             </div>

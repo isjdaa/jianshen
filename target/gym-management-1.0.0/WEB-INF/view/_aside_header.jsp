@@ -26,6 +26,7 @@
                             <c:when test="${sessionScope.role == 'admin'}">
                                 <li> <a href="${pageContext.request.contextPath}/customer">客户信息</a> </li>
                                 <li> <a href="${pageContext.request.contextPath}/coach">教练信息</a> </li>
+                                <li> <a href="${pageContext.request.contextPath}/appointment/admin/list">预约管理</a> </li>
                             </c:when>
                             <c:when test="${sessionScope.role == 'customer'}">
                                 <li> <a href="${pageContext.request.contextPath}/appointment/coach">预约教练</a> </li>
@@ -34,6 +35,8 @@
                             <c:when test="${sessionScope.role == 'coach'}">
                                 <%-- 教练查看自己的预约请求（可确认/拒绝/完成） --%>
                                 <li> <a href="${pageContext.request.contextPath}/appointment/coach/view">我的预约</a> </li>
+                                <%-- 教练查看自己的课程安排 --%>
+                                <li> <a href="${pageContext.request.contextPath}/appointment/coach/courses">我的课程安排</a> </li>
                             </c:when>
                         </c:choose>
                     </ul>
@@ -64,12 +67,16 @@
             <ul class="topbar-right">
                 <li class="dropdown dropdown-profile">
                     <a href="javascript:void(0)" data-toggle="dropdown">
-                        <img class="img-avatar img-avatar-48 m-r-10" src="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" alt="笔下光年" />
-                        <span>笔下光年 <span class="caret"></span></span>
+                        <c:if test="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty()}">
+                            <img class="img-avatar img-avatar-48 m-r-10" 
+                                 src="${sessionScope.user.avatar}" 
+                                 alt="${sessionScope.user.name}" />
+                        </c:if>
+                        <span>${sessionScope.user.name} <span class="caret"></span></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li> <a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a> </li>
-                        <li> <a href="lyear_pages_edit_pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a> </li>
+                        <li> <a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 个人信息</a> </li>
+                        <li> <a href="${pageContext.request.contextPath}/password"><i class="mdi mdi-lock-outline"></i> 修改密码</a> </li>
                         <li> <a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
                         <li class="divider"></li>
                         <li> <a href="${pageContext.request.contextPath}/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>

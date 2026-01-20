@@ -34,8 +34,8 @@
                                 <img class="img-avatar img-avatar-48" src="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" alt="">
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="javascript:void(0);"><i class="mdi mdi-account"></i> 我的资料</a></li>
-                                <li><a href="javascript:void(0);"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
+                                <li><a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 我的资料</a></li>
+                                <li><a href="${pageContext.request.contextPath}/password"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
                                 <li class="divider"></li>
                                 <li><a href="${pageContext.request.contextPath}/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
                             </ul>

@@ -93,7 +93,9 @@ public class LoginServlet extends HttpServlet {
             System.out.println("Trimmed passwords equal: " + passwordMatch);
             
             if (passwordMatch) {
-                req.getSession().setAttribute("user", customer);
+                // 重新从数据库获取完整的客户信息，确保包含最新的头像
+                Customer updatedCustomer = customerService.getById(username);
+                req.getSession().setAttribute("user", updatedCustomer);
                 req.getSession().setAttribute("role", "customer");
                 resp.getWriter().print(ApiResult.json(true, "登陆成功"));
                 return;
@@ -135,7 +137,9 @@ public class LoginServlet extends HttpServlet {
             System.out.println("Trimmed passwords equal: " + passwordMatch);
             
             if (passwordMatch) {
-                req.getSession().setAttribute("user", coach);
+                // 重新从数据库获取完整的教练信息，确保包含最新的头像
+                Coach updatedCoach = coachService.getById(username);
+                req.getSession().setAttribute("user", updatedCoach);
                 req.getSession().setAttribute("role", "coach");
                 resp.getWriter().print(ApiResult.json(true, "登陆成功"));
                 return;

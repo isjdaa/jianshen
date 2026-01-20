@@ -174,6 +174,38 @@ public class AppointmentDAO {
         }
         return pagerVO;
     }
+    
+    // 查询所有预约列表（支持分页）- 管理员使用
+    public PagerVO<Appointment> findAll(int current, int size) {
+        PagerVO<Appointment> pagerVO = new PagerVO<>();
+        pagerVO.setCurrent(current);
+        pagerVO.setSize(size);
+        JdbcHelper helper = new JdbcHelper();
+        
+        // 查询总数
+        ResultSet resultSet = helper.executeQuery("select count(1) from tb_appointment");
+        try {
+            if (resultSet.next()) {
+                pagerVO.setTotal(resultSet.getInt(1));
+            }
+            
+            // 查询数据
+            resultSet = helper.executeQuery(
+                    "select * from tb_appointment order by appointment_date desc, appointment_time desc limit ?, ?",
+                    (current - 1) * size, size
+            );
+            List<Appointment> list = new ArrayList<>();
+            while (resultSet.next()) {
+                list.add(toEntity(resultSet));
+            }
+            pagerVO.setList(list);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            helper.closeDB();
+        }
+        return pagerVO;
+    }
 
     // 转换为实体对象
     private Appointment toEntity(ResultSet resultSet) throws SQLException {

@@ -11,6 +11,8 @@ D:\jianshen\src\com\hello\service\CoachService.java
 D:\jianshen\src\com\hello\utils\MyUtils.java
 D:\jianshen\src\com\hello\entity\Admin.java
 D:\jianshen\src\com\hello\servlet\CaptchaServlet.java
+D:\jianshen\src\com\hello\servlet\UserInfoServlet.java
+D:\jianshen\src\com\hello\servlet\PasswordServlet.java
 D:\jianshen\src\com\hello\service\CustomerService.java
 D:\jianshen\src\com\hello\dao\CourseAppointmentDAO.java
 D:\jianshen\src\com\hello\entity\Appointment.java

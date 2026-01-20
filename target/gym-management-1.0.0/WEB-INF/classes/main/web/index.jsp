@@ -88,7 +88,7 @@
                   <div class="card-body text-center">
                     <h4 class="card-title">我的预约</h4>
                     <p class="card-text">查看客户对您的预约情况</p>
-                    <a href="${pageContext.request.contextPath}/appointment/my" class="btn btn-light">查看预约</a>
+                    <a href="${pageContext.request.contextPath}/appointment/coach/view" class="btn btn-light">查看预约</a>
                   </div>
                 </div>
               </div>

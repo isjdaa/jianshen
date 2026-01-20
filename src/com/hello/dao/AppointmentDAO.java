@@ -53,20 +53,78 @@ public class AppointmentDAO {
         return null;
     }
 
-    // 查询客户的预约列表
+    // 检查客户是否已有相同时间的教练预约
+    public boolean hasDuplicateAppointment(String customerId, String coachId, Date appointmentDate, String appointmentTime, String excludeId) {
+        JdbcHelper helper = new JdbcHelper();
+        String sql = "select count(1) from tb_appointment where customer_id = ? and coach_id = ? and appointment_date = ? and appointment_time = ? and status in ('pending', 'confirmed')";
+        if (excludeId != null && !excludeId.isEmpty()) {
+            sql += " and id != ?";
+        }
+
+        ResultSet resultSet;
+        if (excludeId != null && !excludeId.isEmpty()) {
+            resultSet = helper.executeQuery(sql, customerId, coachId, appointmentDate, appointmentTime, excludeId);
+        } else {
+            resultSet = helper.executeQuery(sql, customerId, coachId, appointmentDate, appointmentTime);
+        }
+
+        try {
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            helper.closeDB();
+        }
+        return false;
+    }
+
+    // 检查教练在指定时间是否已有预约（包括待确认的预约，防止恶意占位）
+    public boolean hasTimeConflict(String coachId, Date appointmentDate, String appointmentTime, String excludeId) {
+        JdbcHelper helper = new JdbcHelper();
+        String sql = "select count(1) from tb_appointment where coach_id = ? and appointment_date = ? and appointment_time = ? and status in ('pending', 'confirmed')";
+        if (excludeId != null && !excludeId.isEmpty()) {
+            sql += " and id != ?";
+        }
+
+        ResultSet resultSet;
+        if (excludeId != null && !excludeId.isEmpty()) {
+            resultSet = helper.executeQuery(sql, coachId, appointmentDate, appointmentTime, excludeId);
+        } else {
+            resultSet = helper.executeQuery(sql, coachId, appointmentDate, appointmentTime);
+        }
+
+        try {
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            helper.closeDB();
+        }
+        return false;
+    }
+
+    // 查询客户的预约列表（支持分页）
     public PagerVO<Appointment> findByCustomerId(int current, int size, String customerId) {
         PagerVO<Appointment> pagerVO = new PagerVO<>();
         pagerVO.setCurrent(current);
         pagerVO.setSize(size);
         JdbcHelper helper = new JdbcHelper();
-        
+
         // 查询总数
         ResultSet resultSet = helper.executeQuery("select count(1) from tb_appointment where customer_id = ?", customerId);
         try {
             if (resultSet.next()) {
                 pagerVO.setTotal(resultSet.getInt(1));
             }
-            
+
+            // 计算总页数
+            int totalPages = (int) Math.ceil((double) pagerVO.getTotal() / size);
+            pagerVO.setTotalPages(totalPages);
+
             // 查询数据
             resultSet = helper.executeQuery(
                     "select * from tb_appointment where customer_id = ? order by appointment_date desc, appointment_time desc limit ?, ?",
@@ -125,7 +183,21 @@ public class AppointmentDAO {
         appointment.setCoachId(resultSet.getString("coach_id"));
         appointment.setAppointmentDate(resultSet.getTimestamp("appointment_date"));
         appointment.setAppointmentTime(resultSet.getString("appointment_time"));
-        appointment.setStatus(resultSet.getString("status"));
+        // 兼容数据库中的中文状态值，统一映射到前端/业务使用的英文状态码
+        String status = resultSet.getString("status");
+        if (status != null) {
+            status = status.trim();
+        }
+        if ("待确认".equals(status)) {
+            status = "pending";
+        } else if ("已确认".equals(status)) {
+            status = "confirmed";
+        } else if ("已完成".equals(status)) {
+            status = "completed";
+        } else if ("已取消".equals(status)) {
+            status = "cancelled";
+        }
+        appointment.setStatus(status);
         appointment.setCreateTime(resultSet.getTimestamp("create_time"));
         appointment.setUpdateTime(resultSet.getTimestamp("update_time"));
         appointment.setRemarks(resultSet.getString("remarks"));

@@ -122,6 +122,31 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <!-- 分页导航 -->
+                                <c:if test="${appointmentPager != null && appointmentPager.total > 0}">
+                                    <div class="text-center">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination">
+                                                <c:if test="${appointmentPager.current > 1}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/my?page=${appointmentPager.current - 1}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                                </c:if>
+
+                                                <c:forEach var="pageNum" begin="1" end="${appointmentPager.pages}">
+                                                    <c:if test="${pageNum >= appointmentPager.current - 2 && pageNum <= appointmentPager.current + 2}">
+                                                        <li class="${pageNum == appointmentPager.current ? 'active' : ''}">
+                                                            <a href="${pageContext.request.contextPath}/appointment/my?page=${pageNum}">${pageNum}</a>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <c:if test="${appointmentPager.current < appointmentPager.pages}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/my?page=${appointmentPager.current + 1}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                                </c:if>
+                                            </ul>
+                                        </nav>
+                                        <p class="text-muted">教练预约：共 ${appointmentPager.total} 条记录，第 ${appointmentPager.current}/${appointmentPager.pages} 页</p>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
 
@@ -203,6 +228,31 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <!-- 分页导航 -->
+                                <c:if test="${courseAppointmentPager != null && courseAppointmentPager.total > 0}">
+                                    <div class="text-center">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination">
+                                                <c:if test="${courseAppointmentPager.current > 1}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/my?page=${courseAppointmentPager.current - 1}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                                </c:if>
+
+                                                <c:forEach var="pageNum" begin="1" end="${courseAppointmentPager.pages}">
+                                                    <c:if test="${pageNum >= courseAppointmentPager.current - 2 && pageNum <= courseAppointmentPager.current + 2}">
+                                                        <li class="${pageNum == courseAppointmentPager.current ? 'active' : ''}">
+                                                            <a href="${pageContext.request.contextPath}/appointment/my?page=${pageNum}">${pageNum}</a>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <c:if test="${courseAppointmentPager.current < courseAppointmentPager.pages}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/my?page=${courseAppointmentPager.current + 1}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                                </c:if>
+                                            </ul>
+                                        </nav>
+                                        <p class="text-muted">课程预约：共 ${courseAppointmentPager.total} 条记录，第 ${courseAppointmentPager.current}/${courseAppointmentPager.pages} 页</p>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -218,7 +268,22 @@
 <script src="${pageContext.request.contextPath}/assets/js/script.min.js"></script>
 <script>
     function updateStatus(id, status, type) {
-        if (confirm('确定要执行此操作吗？')) {
+        var actionText = '';
+        var confirmText = '';
+
+        if (type === 'appointment') {
+            if (status === 'cancelled') {
+                actionText = '取消预约';
+                confirmText = '确定要取消此教练预约吗？取消后将无法恢复。';
+            }
+        } else if (type === 'courseAppointment') {
+            if (status === 'cancelled') {
+                actionText = '取消预约';
+                confirmText = '确定要取消此课程预约吗？取消后将无法恢复，且名额将释放给其他学员。';
+            }
+        }
+
+        if (confirm(confirmText)) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/appointment/updateStatus',
                 type: 'POST',
@@ -230,14 +295,14 @@
                 dataType: 'json',
                 success: function(result) {
                     if (result.success) {
-                        alert('操作成功！');
+                        alert(actionText + '成功！');
                         window.location.reload();
                     } else {
-                        alert('操作失败：' + result.message);
+                        alert(actionText + '失败：' + result.message);
                     }
                 },
                 error: function() {
-                    alert('操作失败，请稍后重试');
+                    alert(actionText + '失败，请检查网络连接后重试');
                 }
             });
         }

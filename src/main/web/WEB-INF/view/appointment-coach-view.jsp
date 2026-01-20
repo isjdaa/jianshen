@@ -1,15 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>健身房客户管理系统-我的预约</title>
+    <!-- APPOINTMENT_COACH_VIEW_VERSION:2026-01-19-1 -->
     <link rel="icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/ico">
     <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assets/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assets/css/style.min.css" rel="stylesheet">
+    <script>
+        // 防止用户在页面脚本加载完成前点击按钮导致 updateStatus 未定义
+        window.updateStatus = window.updateStatus || function () {
+            alert('页面正在加载，请稍后再试...');
+        };
+    </script>
 </head>
 <body>
 <div class="lyear-layout-web">
@@ -78,16 +86,16 @@
                                                             <td>${appointment.appointmentTime}</td>
                                                             <td>
                                                                 <c:choose>
-                                                                    <c:when test="${appointment.status == 'pending'}">
+                                                                    <c:when test="${fn:trim(appointment.status) == 'pending' || fn:trim(appointment.status) == '待确认'}">
                                                                         <span class="label label-warning">待确认</span>
                                                                     </c:when>
-                                                                    <c:when test="${appointment.status == 'confirmed'}">
+                                                                    <c:when test="${fn:trim(appointment.status) == 'confirmed' || fn:trim(appointment.status) == '已确认'}">
                                                                         <span class="label label-success">已确认</span>
                                                                     </c:when>
-                                                                    <c:when test="${appointment.status == 'completed'}">
+                                                                    <c:when test="${fn:trim(appointment.status) == 'completed' || fn:trim(appointment.status) == '已完成'}">
                                                                         <span class="label label-info">已完成</span>
                                                                     </c:when>
-                                                                    <c:when test="${appointment.status == 'cancelled'}">
+                                                                    <c:when test="${fn:trim(appointment.status) == 'cancelled' || fn:trim(appointment.status) == '已取消'}">
                                                                         <span class="label label-danger">已取消</span>
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -98,26 +106,33 @@
                                                             <td>${appointment.remarks != null ? appointment.remarks : '-'}</td>
                                                             <td>${appointment.createTime}</td>
                                                             <td>
-                                                                <c:if test="${appointment.status == 'pending'}">
-                                                                    <div class="btn-group">
-                                                                        <button class="btn btn-success btn-sm" onclick="updateStatus('${appointment.id}', 'confirmed', 'appointment')">
-                                                                            <i class="mdi mdi-check"></i> 确认
-                                                                        </button>
-                                                                        <button class="btn btn-danger btn-sm" onclick="updateStatus('${appointment.id}', 'cancelled', 'appointment')">
-                                                                            <i class="mdi mdi-close"></i> 拒绝
-                                                                        </button>
-                                                                    </div>
-                                                                </c:if>
-                                                                <c:if test="${appointment.status == 'confirmed'}">
-                                                                    <button class="btn btn-info btn-sm" onclick="updateStatus('${appointment.id}', 'completed', 'appointment')">
-                                                                        <i class="mdi mdi-calendar-check"></i> 标记完成
-                                                                    </button>
-                                                                </c:if>
-                                                                <c:if test="${appointment.status == 'completed' || appointment.status == 'cancelled'}">
-                                                                    <button class="btn btn-default btn-sm" disabled>
-                                                                        <i class="mdi mdi-calendar-check"></i> 已处理
-                                                                    </button>
-                                                                </c:if>
+                                                                <c:choose>
+                                    <c:when test="${appointment.status == 'pending' || appointment.status == '待确认'}">
+                                        <div class="btn-group">
+                                            <button class="btn btn-success btn-sm" onclick="updateStatus('${appointment.id}', 'confirmed', 'appointment')">
+                                                <i class="mdi mdi-check"></i> 确认
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="updateStatus('${appointment.id}', 'cancelled', 'appointment')">
+                                                <i class="mdi mdi-close"></i> 拒绝
+                                            </button>
+                                        </div>
+                                    </c:when>
+                                    <c:when test="${appointment.status == 'confirmed' || appointment.status == '已确认'}">
+                                        <button class="btn btn-info btn-sm" onclick="updateStatus('${appointment.id}', 'completed', 'appointment')">
+                                            <i class="mdi mdi-calendar-check"></i> 标记完成
+                                        </button>
+                                    </c:when>
+                                    <c:when test="${appointment.status == 'completed' || appointment.status == '已完成' || appointment.status == 'cancelled' || appointment.status == '已取消'}">
+                                        <button class="btn btn-default btn-sm" disabled>
+                                            <i class="mdi mdi-calendar-check"></i> 已处理
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn btn-default btn-sm" disabled title="未知状态：${appointment.status}">
+                                            <i class="mdi mdi-alert-circle-outline"></i> 无法操作
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -131,6 +146,31 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <!-- 分页导航 -->
+                                <c:if test="${appointmentPager != null && appointmentPager.total > 0}">
+                                    <div class="text-center">
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination">
+                                                <c:if test="${appointmentPager.current > 1}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/coach/view?page=${appointmentPager.current - 1}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                                </c:if>
+
+                                                <c:forEach var="pageNum" begin="1" end="${appointmentPager.totalPages}">
+                                                    <c:if test="${pageNum >= appointmentPager.current - 2 && pageNum <= appointmentPager.current + 2}">
+                                                        <li class="${pageNum == appointmentPager.current ? 'active' : ''}">
+                                                            <a href="${pageContext.request.contextPath}/appointment/coach/view?page=${pageNum}">${pageNum}</a>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <c:if test="${appointmentPager.current < appointmentPager.totalPages}">
+                                                    <li><a href="${pageContext.request.contextPath}/appointment/coach/view?page=${appointmentPager.current + 1}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                                </c:if>
+                                            </ul>
+                                        </nav>
+                                        <p class="text-muted">共 ${appointmentPager.total} 条记录，第 ${appointmentPager.current}/${appointmentPager.totalPages} 页</p>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -145,7 +185,11 @@
 <script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/script.min.js"></script>
 <script>
-    function updateStatus(id, status, type) {
+    // 显式挂到全局，避免出现 onclick 找不到函数（某些情况下脚本作用域/缓存会导致未定义）
+    window.updateStatus = function(id, status, type) {
+        if (window.console && console.log) {
+            console.log("updateStatus click:", { id: id, status: status, type: type });
+        }
         var actionText = '';
         if (status == 'confirmed') {
             actionText = '确认';

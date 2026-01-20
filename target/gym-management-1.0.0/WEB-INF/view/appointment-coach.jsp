@@ -110,22 +110,50 @@
         
         $('#appointmentForm').submit(function(e) {
             e.preventDefault();
-            
+
+            // 表单验证
+            var coachId = $('#coachId').val();
+            var appointmentDate = $('#appointmentDate').val();
+            var appointmentTime = $('#appointmentTime').val();
+
+            if (!coachId) {
+                alert('请选择教练！');
+                $('#coachId').focus();
+                return false;
+            }
+            if (!appointmentDate) {
+                alert('请选择预约日期！');
+                $('#appointmentDate').focus();
+                return false;
+            }
+            if (!appointmentTime) {
+                alert('请选择预约时间！');
+                $('#appointmentTime').focus();
+                return false;
+            }
+
+            // 显示加载状态
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.text();
+            submitBtn.prop('disabled', true).text('提交中...');
+
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function(result) {
+                    submitBtn.prop('disabled', false).text(originalText);
                     if (result.success) {
-                        alert('预约成功！');
+                        alert('预约成功！教练确认后您将收到通知。');
                         window.location.href = '${pageContext.request.contextPath}/appointment/my';
                     } else {
                         alert('预约失败：' + result.message);
                     }
                 },
                 error: function() {
-                    alert('预约失败，请稍后重试');
+                    submitBtn.prop('disabled', false).text(originalText);
+                    alert('预约失败，请检查网络连接后重试');
                 }
             });
         });

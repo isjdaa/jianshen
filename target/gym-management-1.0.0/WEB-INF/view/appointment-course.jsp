@@ -121,7 +121,7 @@
 <script src="${pageContext.request.contextPath}/assets/js/script.min.js"></script>
 <script>
     function bookCourse(courseId) {
-        if (confirm('确定要预约该课程吗？')) {
+        if (confirm('确定要预约该课程吗？预约成功后将占用课程名额。')) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/appointment/course',
                 type: 'POST',
@@ -129,14 +129,14 @@
                 dataType: 'json',
                 success: function(result) {
                     if (result.success) {
-                        alert('预约成功！');
+                        alert('课程预约成功！您可以在"我的预约"中查看预约详情。');
                         window.location.reload();
                     } else {
                         alert('预约失败：' + result.message);
                     }
                 },
                 error: function() {
-                    alert('预约失败，请稍后重试');
+                    alert('预约失败，请检查网络连接后重试');
                 }
             });
         }

@@ -32,7 +32,8 @@
                                 <li> <a href="${pageContext.request.contextPath}/appointment/course">预约课程</a> </li>
                             </c:when>
                             <c:when test="${sessionScope.role == 'coach'}">
-                                <li> <a href="${pageContext.request.contextPath}/appointment/my">我的预约</a> </li>
+                                <%-- 教练查看自己的预约请求（可确认/拒绝/完成） --%>
+                                <li> <a href="${pageContext.request.contextPath}/appointment/coach/view">我的预约</a> </li>
                             </c:when>
                         </c:choose>
                     </ul>

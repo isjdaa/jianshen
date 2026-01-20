@@ -52,6 +52,33 @@ public class CourseAppointmentDAO {
         return null;
     }
 
+    // 检查客户是否已经预约过该课程
+    public boolean hasDuplicateCourseAppointment(String customerId, String courseId, String excludeId) {
+        JdbcHelper helper = new JdbcHelper();
+        String sql = "select count(1) from tb_course_appointment where customer_id = ? and course_id = ? and status in ('confirmed', 'attended')";
+        if (excludeId != null && !excludeId.isEmpty()) {
+            sql += " and id != ?";
+        }
+
+        ResultSet resultSet;
+        if (excludeId != null && !excludeId.isEmpty()) {
+            resultSet = helper.executeQuery(sql, customerId, courseId, excludeId);
+        } else {
+            resultSet = helper.executeQuery(sql, customerId, courseId);
+        }
+
+        try {
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            helper.closeDB();
+        }
+        return false;
+    }
+
     // 查询客户的课程预约列表
     public PagerVO<CourseAppointment> findByCustomerId(int current, int size, String customerId) {
         PagerVO<CourseAppointment> pagerVO = new PagerVO<>();

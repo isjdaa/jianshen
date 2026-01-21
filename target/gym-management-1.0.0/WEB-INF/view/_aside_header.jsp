@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!--左侧导航-->
 <aside class="lyear-layout-sidebar">
     <!-- logo -->
@@ -67,11 +68,9 @@
             <ul class="topbar-right">
                 <li class="dropdown dropdown-profile">
                     <a href="javascript:void(0)" data-toggle="dropdown">
-                        <c:if test="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty()}">
-                            <img class="img-avatar img-avatar-48 m-r-10" 
-                                 src="${sessionScope.user.avatar}" 
-                                 alt="${sessionScope.user.name}" />
-                        </c:if>
+                        <img class="img-avatar img-avatar-48 m-r-10" 
+                             src="${not empty sessionScope.user.avatar ? sessionScope.user.avatar : pageContext.request.contextPath.concat('/assets/images/users/avatar.jpg')}" 
+                             alt="${sessionScope.user.name}" />
                         <span>${sessionScope.user.name} <span class="caret"></span></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">

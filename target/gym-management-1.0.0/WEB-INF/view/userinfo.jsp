@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -17,39 +18,8 @@
 <body>
 <div class="lyear-layout-web">
     <div class="lyear-layout-container">
-        <!--左侧导航-->
+        <!--左侧导航和头部信息-->
         <jsp:include page="_aside_header.jsp" />
-        <!--End 左侧导航-->
-        <!--头部信息-->
-        <header class="lyear-layout-header">
-            <nav class="navbar navbar-default">
-                <div class="topbar">
-                    <div class="topbar-left">
-                        <div class="lyear-aside-toggler">
-                            <span class="lyear-toggler-bar"></span>
-                            <span class="lyear-toggler-bar"></span>
-                            <span class="lyear-toggler-bar"></span>
-                        </div>
-                    </div>
-                    <ul class="topbar-right">
-                        <li class="dropdown dropdown-profile">
-                            <a href="javascript:void(0);" data-toggle="dropdown">
-                                <img class="img-avatar img-avatar-48" 
-                                     src="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty() ? sessionScope.user.avatar : '${pageContext.request.contextPath}/assets/images/users/avatar.jpg'}" 
-                                     alt="">
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 我的资料</a></li>
-                                <li><a href="${pageContext.request.contextPath}/password"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
-                                <li class="divider"></li>
-                                <li><a href="${pageContext.request.contextPath}/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <!--End 头部信息-->
         <!--页面主要内容-->
         <main class="lyear-layout-content">
             <div class="container-fluid">
@@ -60,40 +30,43 @@
                                 <h4>个人信息</h4>
                             </div>
                             <div class="card-body">
-                                <form id="userInfoForm" class="form-horizontal">
+                                <!-- 修改表单enctype支持文件上传 -->
+                                <form id="userInfoForm" class="form-horizontal" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label class="col-xs-12" for="avatar">头像</label>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="avatar-upload">
                                                 <div class="avatar-edit">
-                                                    <input type='file' id="avatarInput" accept=".png,.jpg,.jpeg" />
+                                                    <input type='file' id="avatarInput" name="avatarFile" accept=".png,.jpg,.jpeg" />
                                                     <label for="avatarInput"><i class="mdi mdi-pencil"></i></label>
                                                 </div>
                                                 <div class="avatar-preview">
-                                                    <div id="avatarPreview" style="background-image: url(${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty() ? sessionScope.user.avatar : '${pageContext.request.contextPath}/assets/images/users/avatar.jpg'});"></div>
+                                                    <c:set var="avatarPreviewUrl" value="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" />
+                                                    <c:if test="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty()}">
+                                                        <c:set var="avatarPreviewUrl" value="${sessionScope.user.avatar}" />
+                                                    </c:if>
+                                                    <div id="avatarPreview" style="background-image: url('${avatarPreviewUrl}');"></div>
                                                 </div>
                                             </div>
-                                            <input type="hidden" id="avatar" name="avatar" 
-                                                   value="${sessionScope.user.avatar != null ? sessionScope.user.avatar : ''}">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label class="col-xs-12" for="name">姓名</label>
                                         <div class="col-xs-12 col-sm-6">
-                                            <input type="text" id="name" name="name" class="form-control" 
+                                            <input type="text" id="name" name="name" class="form-control"
                                                    value="${sessionScope.user.name}" placeholder="请输入姓名">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label class="col-xs-12" for="tele">电话</label>
                                         <div class="col-xs-12 col-sm-6">
-                                            <input type="text" id="tele" name="tele" class="form-control" 
+                                            <input type="text" id="tele" name="tele" class="form-control"
                                                    value="${sessionScope.user.tele}" placeholder="请输入电话">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label class="col-xs-12" for="gender">性别</label>
                                         <div class="col-xs-12 col-sm-6">
@@ -103,26 +76,26 @@
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label class="col-xs-12" for="address">详细地址</label>
                                         <div class="col-xs-12 col-sm-6">
-                                            <textarea id="address" name="address" class="form-control" rows="3" 
+                                            <textarea id="address" name="address" class="form-control" rows="3"
                                                       placeholder="请输入详细地址">${sessionScope.user.address}</textarea>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 教练特有字段 -->
                                     <c:if test="${sessionScope.role == 'coach'}">
                                         <div class="form-group">
                                             <label class="col-xs-12" for="specialization">专业特长</label>
                                             <div class="col-xs-12 col-sm-6">
-                                                <input type="text" id="specialization" name="specialization" class="form-control" 
+                                                <input type="text" id="specialization" name="specialization" class="form-control"
                                                        value="${sessionScope.user.specialization}" placeholder="请输入专业特长">
                                             </div>
                                         </div>
                                     </c:if>
-                                    
+
                                     <div class="form-group m-b-0">
                                         <div class="col-xs-12 col-sm-6">
                                             <button type="submit" class="btn btn-primary">保存修改</button>
@@ -212,7 +185,7 @@
                     input.value = ''; // 清空选择的文件
                     return;
                 }
-                
+
                 // 检查图片尺寸，限制为1000x1000像素
                 var img = new Image();
                 img.onload = function() {
@@ -221,31 +194,35 @@
                         input.value = ''; // 清空选择的文件
                         return;
                     }
-                    
-                    // 图片符合要求，读取并显示
+
+                    // 图片符合要求，读取并显示预览
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         $('#avatarPreview').css('background-image', 'url(' + e.target.result + ')');
-                        $('#avatar').val(e.target.result);
                     }
                     reader.readAsDataURL(input.files[0]);
                 };
                 img.src = URL.createObjectURL(input.files[0]);
             }
         }
-        
+
         $('#avatarInput').change(function() {
             readURL(this);
         });
-        
-        // 表单提交
+
+        // 表单提交（支持文件上传）
         $('#userInfoForm').submit(function(e) {
             e.preventDefault();
-            
+
+            // 使用FormData提交文件和表单数据
+            var formData = new FormData(this);
+
             $.ajax({
                 url: '${pageContext.request.contextPath}/userinfo',
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false, // 不处理数据
+                contentType: false, // 不设置内容类型
                 dataType: 'json',
                 success: function(result) {
                     if (result.success) {

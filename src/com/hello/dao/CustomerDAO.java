@@ -104,6 +104,9 @@ public class CustomerDAO {
         if (customer.getAvatar() != null) {
             sql += " avatar=?, ";
             params.add(customer.getAvatar());
+        } else {
+            sql += " avatar=?, ";
+            params.add(null);
         }
         
         sql = sql.substring(0, sql.length() - 2);
@@ -173,11 +176,15 @@ public class CustomerDAO {
         customer.setBalance(resultSet.getDouble("balance"));
         customer.setCoachId(resultSet.getString("coach_id"));
         // 处理avatar字段可能不存在的情况
+        customer.setAvatar(null); // 先初始化null，避免可能的默认值问题
         try {
-            customer.setAvatar(resultSet.getString("avatar"));
+            String avatar = resultSet.getString("avatar");
+            if (avatar != null && !avatar.isEmpty()) {
+                customer.setAvatar(avatar);
+            }
         } catch (SQLException e) {
             // 如果avatar字段不存在，忽略此异常
-            customer.setAvatar(null);
+            System.out.println("Warning: Avatar field not found in customer table");
         }
         return customer;
     }

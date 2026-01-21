@@ -1,10 +1,10 @@
 -- 添加头像字段到客户表和教练表
 
 -- 为客户表添加头像字段
-ALTER TABLE tb_customer ADD COLUMN avatar VARCHAR(255) DEFAULT NULL COMMENT '客户头像';
+ALTER TABLE tb_customer ADD COLUMN avatar TEXT DEFAULT NULL COMMENT '客户头像';
 
 -- 为教练表添加头像字段
-ALTER TABLE tb_coach ADD COLUMN avatar VARCHAR(255) DEFAULT NULL COMMENT '教练头像';
+ALTER TABLE tb_coach ADD COLUMN avatar TEXT DEFAULT NULL COMMENT '教练头像';
 
 -- 显示修改结果
 SELECT '头像字段添加完成！' AS result;

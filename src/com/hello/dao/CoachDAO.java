@@ -87,6 +87,9 @@ public class CoachDAO {
         if (coach.getAvatar() != null) {
             sql += " avatar=?, ";
             params.add(coach.getAvatar());
+        } else {
+            sql += " avatar=?, ";
+            params.add(null);
         }
         
         sql = sql.substring(0, sql.length() - 2);
@@ -152,11 +155,15 @@ public class CoachDAO {
         coach.setAge(resultSet.getInt("age"));
         coach.setAddress(resultSet.getString("address"));
         // 处理avatar字段可能不存在的情况
+        coach.setAvatar(null); // 先初始化null，避免可能的默认值问题
         try {
-            coach.setAvatar(resultSet.getString("avatar"));
+            String avatar = resultSet.getString("avatar");
+            if (avatar != null && !avatar.isEmpty()) {
+                coach.setAvatar(avatar);
+            }
         } catch (SQLException e) {
             // 如果avatar字段不存在，忽略此异常
-            coach.setAvatar(null);
+            System.out.println("Warning: Avatar field not found in coach table");
         }
         return coach;
     }

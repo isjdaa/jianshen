@@ -24,37 +24,8 @@
 <body>
 <div class="lyear-layout-web">
     <div class="lyear-layout-container">
-        <!--左侧导航-->
+        <!--左侧导航和头部信息-->
         <jsp:include page="_aside_header.jsp" />
-        <!--End 左侧导航-->
-        <!--头部信息-->
-        <header class="lyear-layout-header">
-            <nav class="navbar navbar-default">
-                <div class="topbar">
-                    <div class="topbar-left">
-                        <div class="lyear-aside-toggler">
-                            <span class="lyear-toggler-bar"></span>
-                            <span class="lyear-toggler-bar"></span>
-                            <span class="lyear-toggler-bar"></span>
-                        </div>
-                    </div>
-                    <ul class="topbar-right">
-                        <li class="dropdown dropdown-profile">
-                            <a href="javascript:void(0);" data-toggle="dropdown">
-                                <img class="img-avatar img-avatar-48" src="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" alt="">
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 我的资料</a></li>
-                                <li><a href="${pageContext.request.contextPath}/password"><i class="mdi mdi-lock-reset"></i> 修改密码</a></li>
-                                <li class="divider"></li>
-                                <li><a href="${pageContext.request.contextPath}/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <!--End 头部信息-->
         <!--页面主要内容-->
         <main class="lyear-layout-content">
             <div class="container-fluid">

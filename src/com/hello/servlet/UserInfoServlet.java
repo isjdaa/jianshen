@@ -8,24 +8,35 @@ import com.hello.utils.ApiResult;
 import com.hello.utils.MyUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.UUID;
 
+// 新增 MultipartConfig 支持文件上传
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10,      // 10MB
+        maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 @WebServlet({"/userinfo"})
 public class UserInfoServlet extends HttpServlet {
     private CustomerDAO customerDAO = new CustomerDAO();
     private CoachDAO coachDAO = new CoachDAO();
+    // 头像存储路径（相对于项目根目录）
+    private static final String AVATAR_UPLOAD_PATH = "uploads/avatars/";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("utf-8");
         resp.setContentType("text/html; charset=utf-8");
 
-        // 获取当前登录用户
         Object userObj = req.getSession().getAttribute("user");
         String role = (String) req.getSession().getAttribute("role");
 
@@ -34,7 +45,6 @@ public class UserInfoServlet extends HttpServlet {
             return;
         }
 
-        // 跳转到个人信息页面
         req.getRequestDispatcher("/WEB-INF/view/userinfo.jsp").forward(req, resp);
     }
 
@@ -44,7 +54,6 @@ public class UserInfoServlet extends HttpServlet {
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter out = resp.getWriter();
 
-        // 获取当前登录用户
         Object userObj = req.getSession().getAttribute("user");
         String role = (String) req.getSession().getAttribute("role");
         ApiResult apiResult = new ApiResult();
@@ -57,71 +66,87 @@ public class UserInfoServlet extends HttpServlet {
         }
 
         try {
-            // 获取请求参数
+            // 1. 获取普通表单参数
             String name = req.getParameter("name") != null ? req.getParameter("name").trim() : "";
             String tele = req.getParameter("tele") != null ? req.getParameter("tele").trim() : "";
             String gender = req.getParameter("gender") != null ? req.getParameter("gender").trim() : "";
             String address = req.getParameter("address") != null ? req.getParameter("address").trim() : "";
-            String avatar = req.getParameter("avatar") != null ? req.getParameter("avatar").trim() : "";
 
-            if (name.equals("")) {
+            // 参数校验
+            if (name.isEmpty()) {
                 apiResult.error("姓名不能为空");
                 out.print(apiResult.toJson());
-                out.close();
                 return;
             }
-
-            if (tele.equals("")) {
+            if (tele.isEmpty()) {
                 apiResult.error("电话不能为空");
                 out.print(apiResult.toJson());
-                out.close();
                 return;
             }
-            
-            // 限制头像大小，Base64字符串长度约为原始文件大小的1.37倍
-            if (!avatar.equals("")) {
-                // 限制为2MB左右的图片（Base64约2.7MB）
-                if (avatar.length() > 3 * 1024 * 1024) {
-                    apiResult.error("头像大小不能超过2MB");
-                    out.print(apiResult.toJson());
-                    out.close();
-                    return;
+
+            // 2. 处理头像上传
+            String avatarPath = null;
+            Part filePart = req.getPart("avatarFile"); // 对应前端文件上传的name属性
+            if (filePart != null && filePart.getSize() > 0) {
+                // 获取文件扩展名
+                String fileName = filePart.getSubmittedFileName();
+                String ext = fileName.substring(fileName.lastIndexOf("."));
+                // 生成唯一文件名避免重复
+                String newFileName = UUID.randomUUID().toString() + ext;
+
+                // 创建上传目录（如果不存在）
+                String realUploadPath = getServletContext().getRealPath("/" + AVATAR_UPLOAD_PATH);
+                File uploadDir = new File(realUploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
                 }
+
+                // 保存文件到服务器
+                String filePath = realUploadPath + File.separator + newFileName;
+                filePart.write(filePath);
+
+                // 构建访问路径（前端可访问的URL）
+                avatarPath = req.getContextPath() + "/" + AVATAR_UPLOAD_PATH + newFileName;
+                System.out.println("保存的头像URL: " + avatarPath);
             }
 
+            // 3. 更新用户信息
             int result = 0;
             if ("customer".equals(role)) {
-                // 更新客户信息
                 Customer customer = (Customer) userObj;
                 customer.setName(name);
                 customer.setTele(tele);
                 customer.setGender(gender);
                 customer.setAddress(address);
-                if (!avatar.equals("")) {
-                    customer.setAvatar(avatar);
+                // 只有上传了新头像才更新
+                if (avatarPath != null) {
+                    customer.setAvatar(avatarPath);
                 }
                 result = customerDAO.update(customer);
             } else if ("coach".equals(role)) {
-                // 更新教练信息
                 Coach coach = (Coach) userObj;
                 coach.setName(name);
                 coach.setTele(tele);
                 coach.setGender(gender);
                 coach.setAddress(address);
-                if (!avatar.equals("")) {
-                    coach.setAvatar(avatar);
-                }
-                // 获取教练特有的参数
                 String specialization = req.getParameter("specialization") != null ? req.getParameter("specialization").trim() : "";
-                if (!specialization.equals("")) {
-                    coach.setSpecialization(specialization);
+                coach.setSpecialization(specialization);
+                // 只有上传了新头像才更新
+                if (avatarPath != null) {
+                    coach.setAvatar(avatarPath);
                 }
                 result = coachDAO.update(coach);
             }
 
+            // 4. 同步Session中的用户信息
             if (result > 0) {
-                // 更新会话中的用户信息
-                req.getSession().setAttribute("user", userObj);
+                if ("customer".equals(role)) {
+                    Customer updatedCustomer = customerDAO.getById(((Customer) userObj).getId());
+                    req.getSession().setAttribute("user", updatedCustomer);
+                } else if ("coach".equals(role)) {
+                    Coach updatedCoach = coachDAO.getById(((Coach) userObj).getId());
+                    req.getSession().setAttribute("user", updatedCoach);
+                }
                 apiResult.success("个人信息更新成功");
             } else {
                 apiResult.error("个人信息更新失败");

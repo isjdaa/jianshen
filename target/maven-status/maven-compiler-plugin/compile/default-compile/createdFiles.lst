@@ -24,6 +24,7 @@ com\hello\service\CoachService.class
 com\hello\servlet\LoginServlet.class
 com\hello\servlet\CaptchaServlet.class
 com\hello\servlet\LogoutServlet.class
+com\hello\servlet\ScheduleServlet$1.class
 com\hello\utils\MD5Util.class
 com\hello\utils\ApiResult.class
 com\hello\servlet\CoachServlet.class

@@ -32,76 +32,93 @@
                             <div class="card-body">
                                 <!-- 修改表单enctype支持文件上传 -->
                                 <form id="userInfoForm" class="form-horizontal" enctype="multipart/form-data">
-                                    <div class="form-group">
-                                        <label class="col-xs-12" for="avatar">头像</label>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <div class="avatar-upload">
-                                                <div class="avatar-edit">
-                                                    <input type='file' id="avatarInput" name="avatarFile" accept=".png,.jpg,.jpeg" />
-                                                    <label for="avatarInput"><i class="mdi mdi-pencil"></i></label>
-                                                </div>
-                                                <div class="avatar-preview">
-                                                    <c:set var="avatarPreviewUrl" value="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" />
-                                                    <c:if test="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty()}">
-                                                        <c:set var="avatarPreviewUrl" value="${sessionScope.user.avatar}" />
-                                                    </c:if>
-                                                    <div id="avatarPreview" style="background-image: url('${avatarPreviewUrl}');"></div>
+                                    <!-- 只有非管理员用户才显示头像上传功能 -->
+                                    <c:if test="${sessionScope.role != 'admin'}">
+                                        <div class="form-group">
+                                            <label class="col-xs-12" for="avatar">头像</label>
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="avatar-upload">
+                                                    <div class="avatar-edit">
+                                                        <input type='file' id="avatarInput" name="avatarFile" accept=".png,.jpg,.jpeg" />
+                                                        <label for="avatarInput"><i class="mdi mdi-pencil"></i></label>
+                                                    </div>
+                                                    <div class="avatar-preview">
+                                                        <c:set var="avatarPreviewUrl" value="${pageContext.request.contextPath}/assets/images/users/avatar.jpg" />
+                                                        <c:if test="${sessionScope.user.avatar != null && !sessionScope.user.avatar.isEmpty()}">
+                                                            <c:set var="avatarPreviewUrl" value="${sessionScope.user.avatar}" />
+                                                        </c:if>
+                                                        <div id="avatarPreview" style="background-image: url('${avatarPreviewUrl}');"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label class="col-xs-12" for="name">姓名</label>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <input type="text" id="name" name="name" class="form-control"
-                                                   value="${sessionScope.user.name}" placeholder="请输入姓名">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-xs-12" for="tele">电话</label>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <input type="text" id="tele" name="tele" class="form-control"
-                                                   value="${sessionScope.user.tele}" placeholder="请输入电话">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-xs-12" for="gender">性别</label>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <select id="gender" name="gender" class="form-control">
-                                                <option value="男" ${sessionScope.user.gender == '男' ? 'selected' : ''}>男</option>
-                                                <option value="女" ${sessionScope.user.gender == '女' ? 'selected' : ''}>女</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-xs-12" for="address">详细地址</label>
-                                        <div class="col-xs-12 col-sm-6">
-                                            <textarea id="address" name="address" class="form-control" rows="3"
-                                                      placeholder="请输入详细地址">${sessionScope.user.address}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <!-- 教练特有字段 -->
-                                    <c:if test="${sessionScope.role == 'coach'}">
                                         <div class="form-group">
-                                            <label class="col-xs-12" for="specialization">专业特长</label>
+                                            <label class="col-xs-12" for="name">姓名</label>
                                             <div class="col-xs-12 col-sm-6">
-                                                <input type="text" id="specialization" name="specialization" class="form-control"
-                                                       value="${sessionScope.user.specialization}" placeholder="请输入专业特长">
+                                                <input type="text" id="name" name="name" class="form-control"
+                                                       value="${sessionScope.user.name}" placeholder="请输入姓名">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-xs-12" for="tele">电话</label>
+                                            <div class="col-xs-12 col-sm-6">
+                                                <input type="text" id="tele" name="tele" class="form-control"
+                                                       value="${sessionScope.user.tele}" placeholder="请输入电话">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-xs-12" for="gender">性别</label>
+                                            <div class="col-xs-12 col-sm-6">
+                                                <select id="gender" name="gender" class="form-control">
+                                                    <option value="男" ${sessionScope.user.gender == '男' ? 'selected' : ''}>男</option>
+                                                    <option value="女" ${sessionScope.user.gender == '女' ? 'selected' : ''}>女</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-xs-12" for="address">详细地址</label>
+                                            <div class="col-xs-12 col-sm-6">
+                                                <textarea id="address" name="address" class="form-control" rows="3"
+                                                          placeholder="请输入详细地址">${sessionScope.user.address}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- 教练特有字段 -->
+                                        <c:if test="${sessionScope.role == 'coach'}">
+                                            <div class="form-group">
+                                                <label class="col-xs-12" for="specialization">专业特长</label>
+                                                <div class="col-xs-12 col-sm-6">
+                                                    <input type="text" id="specialization" name="specialization" class="form-control"
+                                                           value="${sessionScope.user.specialization}" placeholder="请输入专业特长">
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                    </c:if>
+                                    
+                                    <!-- 管理员用户只显示基本信息 -->
+                                    <c:if test="${sessionScope.role == 'admin'}">
+                                        <div class="form-group">
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="alert alert-info">
+                                                    管理员账号不支持修改个人信息
+                                                </div>
                                             </div>
                                         </div>
                                     </c:if>
 
-                                    <div class="form-group m-b-0">
-                                        <div class="col-xs-12 col-sm-6">
-                                            <button type="submit" class="btn btn-primary">保存修改</button>
-                                            <button type="button" class="btn btn-default" onclick="window.history.back()">取消</button>
+                                    <!-- 只有非管理员用户才显示保存按钮 -->
+                                    <c:if test="${sessionScope.role != 'admin'}">
+                                        <div class="form-group m-b-0">
+                                            <div class="col-xs-12 col-sm-6">
+                                                <button type="submit" class="btn btn-primary">保存修改</button>
+                                                <button type="button" class="btn btn-default" onclick="window.history.back()">取消</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </c:if>
                                 </form>
                             </div>
                         </div>

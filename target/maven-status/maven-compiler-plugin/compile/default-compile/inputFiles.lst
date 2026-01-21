@@ -2,6 +2,7 @@ D:\jianshen\src\com\hello\dao\AdminDAO.java
 D:\jianshen\src\com\hello\entity\Course.java
 D:\jianshen\src\com\hello\filter\LoginFilter.java
 D:\jianshen\src\com\hello\dao\CustomerDAO.java
+D:\jianshen\src\com\hello\servlet\CheckInServlet.java
 D:\jianshen\src\com\hello\utils\ApiResult.java
 D:\jianshen\src\com\hello\dao\CoachDAO.java
 D:\jianshen\src\com\hello\servlet\LoginServlet.java
@@ -19,6 +20,7 @@ D:\jianshen\src\com\hello\entity\Appointment.java
 D:\jianshen\src\com\hello\servlet\CoachServlet.java
 D:\jianshen\src\com\hello\dao\CourseDAO.java
 D:\jianshen\src\com\hello\servlet\LogoutServlet.java
+D:\jianshen\src\com\hello\servlet\ScheduleServlet.java
 D:\jianshen\src\com\hello\dao\AppointmentDAO.java
 D:\jianshen\src\com\hello\utils\BCryptUtil.java
 D:\jianshen\src\com\hello\servlet\AppointmentServlet.java

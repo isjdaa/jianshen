@@ -38,6 +38,10 @@
                                 <li> <a href="${pageContext.request.contextPath}/appointment/coach/view">我的预约</a> </li>
                                 <%-- 教练查看自己的课程安排 --%>
                                 <li> <a href="${pageContext.request.contextPath}/appointment/coach/courses">我的课程安排</a> </li>
+                                <%-- 教练签到功能 --%>
+                                <li> <a href="${pageContext.request.contextPath}/checkIn">上下班签到</a> </li>
+                                <%-- 教练排课查询功能 --%>
+                                <li> <a href="${pageContext.request.contextPath}/schedule">排课查询</a> </li>
                             </c:when>
                         </c:choose>
                     </ul>
@@ -69,9 +73,9 @@
                 <li class="dropdown dropdown-profile">
                     <a href="javascript:void(0)" data-toggle="dropdown">
                         <img class="img-avatar img-avatar-48 m-r-10" 
-                             src="${not empty sessionScope.user.avatar ? sessionScope.user.avatar : pageContext.request.contextPath.concat('/assets/images/users/avatar.jpg')}" 
-                             alt="${sessionScope.user.name}" />
-                        <span>${sessionScope.user.name} <span class="caret"></span></span>
+                             src="${sessionScope.role == 'admin' ? pageContext.request.contextPath.concat('/assets/images/users/avatar.jpg') : (sessionScope.user.avatar != null ? sessionScope.user.avatar : pageContext.request.contextPath.concat('/assets/images/users/avatar.jpg'))}" 
+                             alt="${sessionScope.role == 'admin' ? sessionScope.user.username : sessionScope.user.name}" />
+                        <span>${sessionScope.role == 'admin' ? sessionScope.user.username : sessionScope.user.name} <span class="caret"></span></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li> <a href="${pageContext.request.contextPath}/userinfo"><i class="mdi mdi-account"></i> 个人信息</a> </li>

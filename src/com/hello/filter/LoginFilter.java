@@ -11,7 +11,7 @@ import java.io.IOException;
 * 登录过滤器
 *
 * */
-@WebFilter(urlPatterns = {"/index.jsp","/clazz/*","/student/*","/customer/*","/coach/*","/index"})
+@WebFilter(urlPatterns = {"/index.jsp","/clazz/*","/student/*","/customer/*","/coach/*","/index","/checkIn"})
 public class LoginFilter implements Filter{
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

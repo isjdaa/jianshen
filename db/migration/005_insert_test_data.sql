@@ -23,14 +23,18 @@ INSERT IGNORE INTO tb_customer (id, password, name, tele, joindate, age, gender,
 ('CUST007', '123456', '李十二', '13800138012', NOW(), 31, '男', '北京市房山区', '金卡会员', DATE_ADD(NOW(), INTERVAL 2 YEAR), 1500.00, 'COACH002');
 
 -- 4. 插入课程数据（如果不存在）
-INSERT IGNORE INTO tb_course (id, course_name, coach_id, course_time, duration, max_students, current_students, status, description) VALUES 
+INSERT IGNORE INTO tb_course (id, course_name, coach_id, course_time, duration, max_students, current_students, status, description) VALUES
 ('COURSE001', '基础健身课程', 'COACH001', DATE_ADD(NOW(), INTERVAL 1 DAY), 60, 10, 3, '未开始', '适合初学者的基础健身课程'),
 ('COURSE002', '瑜伽入门', 'COACH002', DATE_ADD(NOW(), INTERVAL 2 DAY), 90, 15, 5, '未开始', '放松身心的瑜伽入门课程'),
 ('COURSE003', '游泳提高班', 'COACH003', DATE_ADD(NOW(), INTERVAL 3 DAY), 120, 8, 2, '未开始', '提高游泳技巧的进阶课程'),
 ('COURSE004', '普拉提核心训练', 'COACH004', DATE_ADD(NOW(), INTERVAL 4 DAY), 75, 12, 4, '未开始', '专注核心力量的普拉提课程'),
 ('COURSE005', '拳击基础', 'COACH005', DATE_ADD(NOW(), INTERVAL 5 DAY), 90, 10, 3, '未开始', '学习拳击技巧和防身术'),
 ('COURSE006', '高级健身课程', 'COACH001', DATE_ADD(NOW(), INTERVAL 6 DAY), 60, 8, 2, '未开始', '适合有经验健身者的高级课程'),
-('COURSE007', '高温瑜伽', 'COACH002', DATE_ADD(NOW(), INTERVAL 7 DAY), 90, 12, 4, '未开始', '在高温环境下的高强度瑜伽课程');
+('COURSE007', '高温瑜伽', 'COACH002', DATE_ADD(NOW(), INTERVAL 7 DAY), 90, 12, 4, '未开始', '在高温环境下的高强度瑜伽课程'),
+-- 添加当前时间段内的测试课程（用于测试签到功能）
+('COURSE_TEST_001', '测试签到课程-张三', 'COACH001', DATE_ADD(NOW(), INTERVAL -30 MINUTE), 60, 10, 1, '进行中', '测试签到功能专用课程'),
+('COURSE_TEST_002', '测试签到课程-李四', 'COACH002', DATE_ADD(NOW(), INTERVAL -45 MINUTE), 90, 15, 1, '进行中', '测试签到功能专用课程'),
+('COURSE_TEST_003', '测试签到课程-王五', 'COACH003', NOW(), 120, 8, 1, '进行中', '测试签到功能专用课程');
 
 -- 5. 插入预约数据（如果不存在）
 INSERT IGNORE INTO tb_appointment (id, customer_id, coach_id, appointment_date, appointment_time, status, create_time, update_time, remarks) VALUES 
@@ -54,10 +58,10 @@ INSERT IGNORE INTO tb_course_appointment (id, customer_id, course_id, appointmen
 ('COURSEAPT010', 'CUST003', 'COURSE001', NOW(), '已预约', NOW());
 
 -- 7. 更新课程当前人数（确保与课程预约数量一致）
-UPDATE tb_course c 
+UPDATE tb_course c
 SET current_students = (
-    SELECT COUNT(*) 
-    FROM tb_course_appointment ca 
+    SELECT COUNT(*)
+    FROM tb_course_appointment ca
     WHERE ca.course_id = c.id AND ca.status = '已预约'
 );
 

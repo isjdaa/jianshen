@@ -9,7 +9,7 @@ public class InsertTestData {
         // Database connection information
         String url = "jdbc:mysql://localhost:3306/stu_manage?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
         String username = "root";
-        String password = "root";
+        String password = "123456";
         
         Connection conn = null;
         Statement stmt = null;

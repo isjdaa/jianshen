@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -46,11 +48,15 @@ public class CheckInServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
 
+        System.out.println("[签到] POST请求开始处理: " + request.getRequestURI());
+
         // 1. 登录校验
         HttpSession session = request.getSession();
         Coach coach = (Coach) session.getAttribute("user");
+        System.out.println("[签到] session user: " + coach);
+
         if (coach == null || coach.getId() == null || coach.getId().trim().isEmpty()) {
-            System.out.println("[签到] 未登录/教练ID为空，跳转登录页");
+            System.out.println("[签到] 用户未登录，重定向到登录页");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
@@ -60,8 +66,12 @@ public class CheckInServlet extends HttpServlet {
 
         // 2. 签到类型校验
         String checkType = request.getParameter("checkType");
+        System.out.println("[签到] checkType参数: " + checkType);
+
         if (checkType == null || (!"1".equals(checkType) && !"2".equals(checkType))) {
+            System.out.println("[签到] 无效的签到类型: " + checkType);
             request.setAttribute("msg", "无效的签到类型！");
+            request.setAttribute("msgType", "danger"); // 错误消息用红色
             loadCheckInData(request, coachId); // 加载基础数据
             request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
             return;
@@ -76,10 +86,30 @@ public class CheckInServlet extends HttpServlet {
         List<Map<String, Object>> todayRecords = new ArrayList<>();
 
         try {
-            // 可选：排课校验（改为警告而非阻断，更符合实际业务）
-            if (!hasCourseNow(jdbcHelper, coachId)) {
-                request.setAttribute("msg", "提示：当前时段没有排课，仍可正常签到");
+            // 1. 时间合理性校验（可选）：检查是否在正常工作时间内
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            if (hour < 6 || hour > 22) {
+                request.setAttribute("msg", "当前时间段为非工作时间（6:00-22:00），签到功能暂时不可用。如有特殊情况请联系管理员。");
+                request.setAttribute("msgType", "warning");
+                loadCheckInData(request, coachId);
+                request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
+                return;
             }
+
+            // 2. 严格排课校验：只有在有课期间才能签到
+            System.out.println("[签到] 开始排课校验，教练ID: " + coachId);
+            if (!hasCourseNow(jdbcHelper, coachId)) {
+                System.out.println("[签到] 排课校验失败，教练" + coachId + "当前时段没有排课");
+                request.setAttribute("msg", "当前时段没有排课，无法签到！请在课程开始前1小时到课程结束后1小时内进行签到。如需测试，请联系管理员添加测试课程。");
+                request.setAttribute("msgType", "warning"); // 警告消息用黄色
+                System.out.println("[签到] 设置错误消息: " + request.getAttribute("msg"));
+                loadCheckInData(request, coachId); // 加载基础数据
+                System.out.println("[签到] loadCheckInData执行完毕，最终msg: " + request.getAttribute("msg"));
+                request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
+                return; // 直接返回，不继续执行签到逻辑
+            }
+            System.out.println("[签到] 排课校验通过，继续签到流程");
 
             // 4. 核心校验：今日是否已完成该类型签到
             String today = DATE_ONLY_FORMATTER.get().format(new Date());
@@ -94,7 +124,8 @@ public class CheckInServlet extends HttpServlet {
 
             if (!checkResult.isEmpty()) {
                 // 重复操作，禁止
-                request.setAttribute("msg", "你今日已完成" + checkTypeName + "，请勿重复操作！");
+                request.setAttribute("msg", "您今日已经完成" + checkTypeName + "，不能重复操作！如需修改请联系管理员。");
+                request.setAttribute("msgType", "warning"); // 重复操作用黄色警告
             } else {
                 // 5. 签退专属校验：必须先上班签到
                 boolean canOperate = true;
@@ -106,23 +137,33 @@ public class CheckInServlet extends HttpServlet {
 
                     if (checkInResult.isEmpty()) {
                         canOperate = false;
-                        request.setAttribute("msg", "请先完成上班签到，才能进行下班签退！");
+                        request.setAttribute("msg", "请先完成上班签到，才能进行下班签退！请确保今日已进行过上班签到。");
+                        request.setAttribute("msgType", "danger"); // 顺序错误用红色
                     }
                 }
 
-                // 6. 执行签到/签退插入
-                if (canOperate) {
+                // 6. 执行签到/签退插入 - 只有在有课期间才能签到
+                if (canOperate && hasCourseNow(jdbcHelper, coachId)) {
                     String currentTime = DATE_FORMATTER.get().format(new Date());
                     Timestamp checkTime = Timestamp.valueOf(currentTime);
-                    String insertSql = "INSERT INTO check_in_record (coach_id, coach_name, check_type, check_time) VALUES (?, ?, ?, ?)";
-                    int affectedRows = jdbcHelper.executeUpdateNoClose(insertSql, coachId, coachName, checkTypeName, checkTime);
+                    // 生成唯一ID
+                    String id = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
+                    // 更新SQL，添加ID字段
+                    String insertSql = "INSERT INTO check_in_record (id, coach_id, coach_name, check_type, check_time) VALUES (?, ?, ?, ?, ?)";
+                    int affectedRows = jdbcHelper.executeUpdateNoClose(insertSql, id, coachId, coachName, checkTypeName, checkTime);
                     System.out.println("[签到] 插入结果：影响行数=" + affectedRows);
 
                     if (affectedRows > 0) {
                         request.setAttribute("msg", checkTypeName + "成功！时间：" + currentTime);
+                        request.setAttribute("msgType", "success"); // 成功消息用绿色
                     } else {
                         request.setAttribute("msg", checkTypeName + "失败，请重试！");
+                        request.setAttribute("msgType", "danger"); // 失败消息用红色
                     }
+                } else if (canOperate && !hasCourseNow(jdbcHelper, coachId)) {
+                    // 如果没有排课，不执行签到操作，显示提示信息
+                    request.setAttribute("msg", "当前时段没有排课，无法签到！请在课程开始前1小时到课程结束后1小时内进行签到。");
+                    request.setAttribute("msgType", "warning"); // 警告消息用黄色
                 }
             }
 
@@ -131,7 +172,8 @@ public class CheckInServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "操作异常：" + e.getMessage());
+            request.setAttribute("msg", "系统异常，请稍后重试或联系管理员！");
+            request.setAttribute("msgType", "danger"); // 异常消息用红色
             // 异常时仍加载基础数据
             loadBasicCheckInData(request, coachId);
         } finally {
@@ -146,16 +188,24 @@ public class CheckInServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("[签到] GET请求到达: " + request.getRequestURI());
+
         // 登录校验
         HttpSession session = request.getSession();
         Coach coach = (Coach) session.getAttribute("user");
+        System.out.println("[签到] GET请求session中的user: " + coach);
+
         if (coach == null || coach.getId() == null || coach.getId().trim().isEmpty()) {
+            System.out.println("[签到] GET请求用户未登录，重定向到登录页");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
+        String coachId = coach.getId().trim();
+        System.out.println("[签到] GET请求加载数据，教练ID: " + coachId);
+
         // 加载签到数据并跳转页面
-        loadCheckInData(request, coach.getId().trim());
+        loadCheckInData(request, coachId);
         request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
     }
 
@@ -187,7 +237,12 @@ public class CheckInServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "查询记录失败：" + e.getMessage());
+            System.out.println("[签到] loadCheckInData异常: " + e.getMessage());
+            // 只在msg属性为空时才设置新的错误信息，避免覆盖之前的签到提示
+            if (request.getAttribute("msg") == null) {
+                request.setAttribute("msg", "查询记录失败：" + e.getMessage());
+                request.setAttribute("msgType", "danger");
+            }
             loadBasicCheckInData(request, coachId);
         } finally {
             jdbcHelper.closeDB();
@@ -226,14 +281,18 @@ public class CheckInServlet extends HttpServlet {
      */
     private boolean hasCourseNow(JdbcHelper jdbcHelper, String coachId) {
         try {
-            // 简化排课校验（实际项目中请根据真实表结构调整）
-            // 这里改为：默认返回true（避免阻断签到），如需严格校验可恢复原逻辑
-            return true;
-
-            /* 原排课校验逻辑（如需启用请取消注释）
             Date now = new Date();
             String currentTime = DATE_FORMATTER.get().format(now);
-            String sql = "SELECT COUNT(*) FROM tb_course WHERE coach_id = ? AND course_time BETWEEN DATE_SUB(?, INTERVAL 1 HOUR) AND DATE_ADD(?, INTERVAL 1 HOUR) AND status != '已结束'";
+
+            // 检查当前时间前后1小时内是否有该教练的课程
+            // 课程时间在当前时间前1小时到后1小时范围内，且状态不是已结束
+            String sql = "SELECT COUNT(*) FROM tb_course WHERE coach_id = ? AND " +
+                        "course_time BETWEEN DATE_SUB(?, INTERVAL 1 HOUR) AND DATE_ADD(?, INTERVAL 1 HOUR) " +
+                        "AND status != '已结束'";
+
+            System.out.println("[签到] 排课校验SQL：" + sql);
+            System.out.println("[签到] 校验参数：coachId=" + coachId + ", currentTime=" + currentTime);
+
             List<Map<String, Object>> resultList = jdbcHelper.executeQueryToListNoClose(sql, coachId, currentTime, currentTime);
 
             if (!resultList.isEmpty() && resultList.get(0).values().iterator().next() != null) {
@@ -241,11 +300,11 @@ public class CheckInServlet extends HttpServlet {
                 System.out.println("[签到] 当前教练ID：" + coachId + "，当前时段排课数量：" + count);
                 return count > 0;
             }
-            */
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("[签到] 排课校验异常，允许签到");
         }
-        return true; // 异常时允许签到
+        return false; // 没有排课或异常时不允许签到
     }
 
     /**

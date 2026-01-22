@@ -32,13 +32,46 @@
                             </div>
                             <div class="card-body">
                                 <div class="text-center">
+                                    <!-- 调试信息 -->
+                                    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-size: 12px; border: 1px solid #ccc;">
+                                        调试信息: msg="${msg}", msgType="${msgType}", hasCheckedIn="${hasCheckedIn}", hasCheckedOut="${hasCheckedOut}"
+                                    </div>
+
                                     <c:if test="not empty msg">
-                                        <div class="alert alert-info alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                                ${msg}
-                                        </div>
+                                        <c:choose>
+                                            <c:when test="${msgType == 'success'}">
+                                                <div class="alert alert-success alert-dismissible" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <i class="mdi mdi-check-circle"></i> ${msg}
+                                                </div>
+                                            </c:when>
+                                            <c:when test="${msgType == 'danger'}">
+                                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <i class="mdi mdi-alert-circle"></i> ${msg}
+                                                </div>
+                                            </c:when>
+                                            <c:when test="${msgType == 'warning'}">
+                                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <i class="mdi mdi-alert"></i> ${msg}
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="alert alert-info alert-dismissible" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <i class="mdi mdi-information"></i> ${msg}
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:if>
 
                                     <!-- 当前时间显示 -->

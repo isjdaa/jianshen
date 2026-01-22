@@ -31,7 +31,7 @@ public class ScheduleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Coach coach = (Coach) session.getAttribute("user");
         if (coach == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
@@ -43,6 +43,10 @@ public class ScheduleServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
+            System.out.println("=== 开始处理排课查询请求 ===");
+
+
+
             String sql = "";
             Object[] params = null;
 
@@ -62,14 +66,14 @@ public class ScheduleServlet extends HttpServlet {
                 String queryDate = request.getParameter("queryDate");
                 if (queryDate == null || queryDate.isEmpty()) {
                     request.setAttribute("msg", "请输入查询日期！");
-                    request.getRequestDispatcher("schedule.jsp").forward(request, response);
+                    request.getRequestDispatcher("/schedule.jsp").forward(request, response);
                     return;
                 }
                 sql = "SELECT * FROM course_schedule WHERE schedule_date = ?";
                 params = new Object[]{queryDate};
             } else {
                 request.setAttribute("msg", "请选择正确的查询类型！");
-                request.getRequestDispatcher("schedule.jsp").forward(request, response);
+                request.getRequestDispatcher("/schedule.jsp").forward(request, response);
                 return;
             }
 
@@ -104,7 +108,7 @@ public class ScheduleServlet extends HttpServlet {
             jdbcHelper.closeDB();
         }
 
-        request.getRequestDispatcher("schedule.jsp").forward(request, response);
+        request.getRequestDispatcher("/schedule.jsp").forward(request, response);
     }
 
     @Override
@@ -113,12 +117,12 @@ public class ScheduleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Coach coach = (Coach) session.getAttribute("user");
         if (coach == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
         // 直接跳转到排课查询页面
-        request.getRequestDispatcher("schedule.jsp").forward(request, response);
+        request.getRequestDispatcher("/schedule.jsp").forward(request, response);
     }
 
     // 内部类：排课记录

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -54,7 +55,7 @@
                                             </div>
                                             <div style="font-size: 12px; color: #6c757d;">
                                                 <c:if test="not empty msg">
-                                                    提示：<strong>${msg}</strong>
+                                                    提示：<strong><c:out value="${msg}" escapeXml="false"/></strong>
                                                 </c:if>
                                             </div>
                                         </div>
@@ -67,7 +68,7 @@
                                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                         <span aria-hidden="true">×</span>
                                                     </button>
-                                                    <i class="mdi mdi-check-circle"></i> ${msg}
+                                                    <i class="mdi mdi-check-circle"></i> <c:out value="${msg}" escapeXml="false"/>
                                                 </div>
                                             </c:when>
                                             <c:when test="${msgType == 'danger'}">
@@ -75,7 +76,7 @@
                                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                         <span aria-hidden="true">×</span>
                                                     </button>
-                                                    <i class="mdi mdi-alert-circle"></i> ${msg}
+                                                    <i class="mdi mdi-alert-circle"></i> <c:out value="${msg}" escapeXml="false"/>
                                                 </div>
                                             </c:when>
                                             <c:when test="${msgType == 'warning'}">
@@ -83,7 +84,7 @@
                                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                         <span aria-hidden="true">×</span>
                                                     </button>
-                                                    <i class="mdi mdi-alert"></i> ${msg}
+                                                    <i class="mdi mdi-alert"></i> <c:out value="${msg}" escapeXml="false"/>
                                                 </div>
                                             </c:when>
                                             <c:otherwise>
@@ -91,7 +92,7 @@
                                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                         <span aria-hidden="true">×</span>
                                                     </button>
-                                                    <i class="mdi mdi-information"></i> ${msg}
+                                                    <i class="mdi mdi-information"></i> <c:out value="${msg}" escapeXml="false"/>
                                                 </div>
                                             </c:otherwise>
                                         </c:choose>
@@ -132,7 +133,7 @@
                                         </div>
                                     </div>
 
-                                    <form method="post" action="${pageContext.request.contextPath}/checkIn" class="checkin-form" onsubmit="return disableButtonOnSubmit()">
+                                    <form method="post" action="${pageContext.request.contextPath}/checkIn" class="checkin-form">
                                         <h5>欢迎回来，${sessionScope.user.name} 教练！</h5>
                                         <div class="checkin-buttons">
                                             <!-- 上班签到按钮 -->
@@ -225,16 +226,39 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="failModalLabel">
-                    <i class="mdi mdi-alert-circle"></i> 操作失败
+                    <i class="mdi mdi-alert-circle"></i>
+                    <c:choose>
+                        <c:when test="${errorType == 'invalid_type'}">参数错误</c:when>
+                        <c:when test="${errorType == 'system_error'}">系统错误</c:when>
+                        <c:when test="${errorType == 'checkout_before_checkin'}">操作顺序错误</c:when>
+                        <c:otherwise>签到失败</c:otherwise>
+                    </c:choose>
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p id="failMsg" style="font-size: 16px; line-height: 1.8;">${msg}</p>
+                <div id="failMsg" style="font-size: 16px; line-height: 1.8;">
+                    <c:out value="${msg}" escapeXml="false"/>
+                </div>
                 <div class="mt-3">
-                    <small class="text-muted">如需帮助，请联系系统管理员</small>
+                    <small class="text-muted">
+                        <c:choose>
+                            <c:when test="${fn:contains(msg, '系统异常') or fn:contains(msg, '数据库操作')}">
+                                如问题持续，请联系技术支持并提供错误信息
+                            </c:when>
+                            <c:when test="${fn:contains(msg, '课程安排')}">
+                                请查看您的课程表或联系管理员添加课程
+                            </c:when>
+                            <c:when test="${fn:contains(msg, '重复操作')}">
+                                如需修改已完成的签到记录，请联系管理员
+                            </c:when>
+                            <c:otherwise>
+                                如需帮助，请联系系统管理员
+                            </c:otherwise>
+                        </c:choose>
+                    </small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -251,14 +275,40 @@
         <div class="modal-content">
             <div class="modal-header bg-warning text-white">
                 <h5 class="modal-title" id="warnModalLabel">
-                    <i class="mdi mdi-alert"></i> 操作提醒
+                    <i class="mdi mdi-alert"></i>
+                    <c:choose>
+                        <c:when test="${errorType == 'duplicate_check'}">重复操作</c:when>
+                        <c:when test="${errorType == 'no_course'}">课程安排</c:when>
+                        <c:when test="${errorType == 'non_working_hour'}">时间错误</c:when>
+                        <c:otherwise>操作提醒</c:otherwise>
+                    </c:choose>
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p id="warnMsg" style="font-size: 16px; line-height: 1.8;">${msg}</p>
+                <div id="warnMsg" style="font-size: 16px; line-height: 1.8;">
+                    <c:out value="${msg}" escapeXml="false"/>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <c:choose>
+                            <c:when test="${fn:contains(msg, '课程安排')}">
+                                请查看您的课程表或联系管理员添加课程安排
+                            </c:when>
+                            <c:when test="${fn:contains(msg, '重复操作')}">
+                                系统不允许重复签到，如有特殊情况请联系管理员
+                            </c:when>
+                            <c:when test="${fn:contains(msg, '尚未进行上班签到')}">
+                                请先完成上班签到，再进行下班签退操作
+                            </c:when>
+                            <c:otherwise>
+                                请按照提示信息进行正确的操作
+                            </c:otherwise>
+                        </c:choose>
+                    </small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
@@ -431,6 +481,8 @@
     $(document).ready(function() {
         const msgType = '${msgType}';
         const msg = '${msg}';
+
+        console.log('Debug - msgType:', msgType, 'msg:', msg);
 
         // 仅在有失败/警告消息时弹出弹窗
         if (msg && msg.trim() !== '') {

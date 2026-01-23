@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>签到参数调试测试</title>
+    <meta charset="UTF-8">
+    <style>
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>签到参数调试测试</h1>
+
+    <div class="test-section">
+        <h3>参数传递测试</h3>
+        <form method="post" action="http://localhost:8081/gym-management/checkIn" target="_blank">
+            <label>checkType值：
+                <select name="checkType">
+                    <option value="1">1 (上班签到)</option>
+                    <option value="2">2 (下班签退)</option>
+                    <option value="">空值 (应该触发参数错误)</option>
+                    <option value="3">3 (无效值，应该触发参数错误)</option>
+                </select>
+            </label>
+            <button type="submit">测试参数传递</button>
+        </form>
+    </div>
+
+    <div class="test-section">
+        <h3>正常业务测试</h3>
+        <form method="post" action="http://localhost:8081/gym-management/checkIn" target="_blank">
+            <input type="hidden" name="checkType" value="1">
+            <button type="submit">测试上班签到 (checkType=1)</button>
+        </form>
+
+        <br>
+
+        <form method="post" action="http://localhost:8081/gym-management/checkIn" target="_blank">
+            <input type="hidden" name="checkType" value="2">
+            <button type="submit">测试下班签退 (checkType=2)</button>
+        </form>
+    </div>
+
+    <div class="debug-info">
+        <strong>调试信息：</strong><br>
+        • 服务器控制台会显示接收到的所有参数<br>
+        • 如果弹出"参数错误"，说明checkType参数传递有问题<br>
+        • 如果弹出"课程安排"或"时间错误"，说明参数传递正常，业务逻辑正常<br>
+        • 检查浏览器开发者工具的Network标签确认POST数据
+    </div>
+
+    <p><strong>注意：</strong>这个测试需要先登录COACH003账号，否则会被重定向到登录页。</p>
+
+    <h3>问题诊断</h3>
+    <ul>
+        <li><strong>总是显示"参数错误"：</strong>checkType参数没有正确传递到服务器</li>
+        <li><strong>显示业务错误：</strong>参数传递正常，具体错误取决于当前时间和课程安排</li>
+        <li><strong>控制台无输出：</strong>请求没有到达CheckInServlet，可能被过滤器拦截</li>
+    </ul>
+</body>
+</html>

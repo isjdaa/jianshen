@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>签到失败弹窗消息示例</title>
+    <meta charset="UTF-8">
+    <style>
+        .message-box {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: Arial, sans-serif;
+        }
+        .error-box { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning-box { background-color: #fff3cd; border-color: #ffeaa7; }
+        .success-box { background-color: #d1edff; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>签到失败弹窗消息示例</h1>
+
+    <h2>1. 无课程安排失败</h2>
+    <div class="message-box warning-box">
+        <strong>签到失败原因：当前时间段没有您的课程安排</strong><br><br>
+        <strong>签到规则说明：</strong><br>
+        • 仅可在课程开始前1小时至课程结束后1小时的时间范围内签到<br>
+        • 请确认您当前是否有正在进行的课程或即将开始的课程<br><br>
+        <em>补充提示：下节瑜伽课：2026-01-23 15:00:00（2小时30分钟后）</em>
+    </div>
+
+    <h2>2. 重复签到失败</h2>
+    <div class="message-box warning-box">
+        <strong>签到失败原因：今日已完成上班签到操作</strong><br><br>
+        <strong>签到规则：</strong><br>
+        • 每天只能进行一次上班签到<br>
+        • 每天只能进行一次下班签退<br><br>
+        <em>如需修改，请联系管理员</em>
+    </div>
+
+    <h2>3. 签退顺序错误</h2>
+    <div class="message-box error-box">
+        <strong>签退失败原因：今日尚未进行上班签到</strong><br><br>
+        <strong>签退规则：</strong><br>
+        • 必须先完成上班签到<br>
+        • 才能进行下班签退操作<br><br>
+        <em>请先完成上班签到</em>
+    </div>
+
+    <h2>4. 非工作时间失败</h2>
+    <div class="message-box warning-box">
+        <strong>签到失败原因：当前时间不在工作时间内</strong><br><br>
+        <strong>工作时间：</strong><br>
+        • 每天 6:00 - 22:00<br><br>
+        <em>请在工作时间内进行签到操作</em>
+    </div>
+
+    <h2>5. 系统异常失败</h2>
+    <div class="message-box error-box">
+        <strong>签到失败原因：系统异常（数据库连接失败）</strong><br><br>
+        <strong>解决建议：</strong><br>
+        • 请稍后重试<br>
+        • 如问题持续，请联系管理员<br>
+        • 提供错误信息给技术支持
+    </div>
+
+    <p><em>注：实际弹窗会显示在Bootstrap modal中，包含相应的标题和关闭按钮</em></p>
+</body>
+</html>

@@ -15,21 +15,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
 /**
- * 教练签到/签退Servlet（优化版）
- * 优化：完善失败原因提示、弹窗提示支持、精准文案描述
+ * 教练签到/签退Servlet（修复版）
+ * 修复：预处理换行符为<br>，规避JSP EL解析器转义错误
  */
 @WebServlet("/checkIn")
 public class CheckInServlet extends HttpServlet {
-    // ========== 提取提示文案常量（精准描述失败原因） ==========
+    // ========== 提示文案常量（换行符改为<br>） ==========
     private static final String MSG_INVALID_CHECK_TYPE = "签到失败：无效的签到类型（仅支持上班签到/下班签退）";
     private static final String MSG_NON_WORKING_HOUR = "签到失败：当前非工作时间（6:00-22:00），仅可在工作时间内完成签到/签退";
-    private static final String MSG_NO_COURSE_SCHEDULED = "签到失败：当前无课程安排，无法完成签到\n仅可在课程开始前1小时至结束后1小时内签到";
+    private static final String MSG_NO_COURSE_SCHEDULED = "签到失败：当前无课程安排，无法完成签到<br>仅可在课程开始前1小时至结束后1小时内签到";
     private static final String MSG_DUPLICATE_CHECK = "签到失败：今日已完成%s，不可重复操作";
     private static final String MSG_CHECKOUT_BEFORE_CHECKIN = "签退失败：请先完成上班签到，再进行下班签退操作";
     private static final String MSG_CHECK_SUCCESS = "%s成功！时间：%s";
@@ -80,12 +81,22 @@ public class CheckInServlet extends HttpServlet {
 
         // 2. 签到类型校验
         String checkType = request.getParameter("checkType");
-        System.out.println("[签到] checkType参数: " + checkType);
+        System.out.println("[签到] checkType参数: '" + checkType + "'");
+
+        // 调试：打印所有请求参数
+        System.out.println("[签到] 所有请求参数:");
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            System.out.println("[签到] 参数 " + paramName + " = '" + paramValue + "'");
+        }
 
         if (checkType == null || (!"1".equals(checkType) && !"2".equals(checkType))) {
             System.out.println("[签到] 无效的签到类型: " + checkType);
             request.setAttribute("msg", MSG_INVALID_CHECK_TYPE);
             request.setAttribute("msgType", "danger");
+            request.setAttribute("errorType", "invalid_type");
             loadCheckInData(request, coachId);
             request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
             return;
@@ -105,6 +116,7 @@ public class CheckInServlet extends HttpServlet {
             if (hour < 6 || hour > 22) {
                 request.setAttribute("msg", MSG_NON_WORKING_HOUR);
                 request.setAttribute("msgType", "warning");
+                request.setAttribute("errorType", "non_working_hour");
                 loadCheckInData(request, coachId);
                 request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
                 return;
@@ -116,14 +128,15 @@ public class CheckInServlet extends HttpServlet {
             if (!courseCheck.hasCourse()) {
                 System.out.println("[签到] 排课校验失败，教练" + coachId + "当前时段没有排课");
 
-                // 构建详细的失败原因消息
+                // 构建详细的失败原因消息（预处理换行符）
                 String detailedMsg = MSG_NO_COURSE_SCHEDULED;
                 if (courseCheck.getFailureReason() != null && !courseCheck.getFailureReason().isEmpty()) {
-                    detailedMsg += "\n" + "补充提示：" + courseCheck.getFailureReason();
+                    detailedMsg += "<br>" + "补充提示：" + courseCheck.getFailureReason();
                 }
 
                 request.setAttribute("msg", detailedMsg);
                 request.setAttribute("msgType", "warning");
+                request.setAttribute("errorType", "no_course");
                 loadCheckInData(request, coachId);
                 request.getRequestDispatcher("/checkIn.jsp").forward(request, response);
                 return;
@@ -145,6 +158,7 @@ public class CheckInServlet extends HttpServlet {
                 // 重复操作提示（格式化文案）
                 request.setAttribute("msg", String.format(MSG_DUPLICATE_CHECK, checkTypeName));
                 request.setAttribute("msgType", "warning");
+                request.setAttribute("errorType", "duplicate_check");
             } else {
                 // 签退专属校验
                 boolean canOperate = true;
@@ -158,6 +172,7 @@ public class CheckInServlet extends HttpServlet {
                         canOperate = false;
                         request.setAttribute("msg", MSG_CHECKOUT_BEFORE_CHECKIN);
                         request.setAttribute("msgType", "danger");
+                        request.setAttribute("errorType", "checkout_before_checkin");
                     }
                 }
 
@@ -190,6 +205,7 @@ public class CheckInServlet extends HttpServlet {
             String errorMsg = e.getMessage() != null ? e.getMessage().substring(0, 50) : "未知异常";
             request.setAttribute("msg", String.format(MSG_SYSTEM_ERROR, errorMsg));
             request.setAttribute("msgType", "danger");
+            request.setAttribute("errorType", "system_error");
             loadBasicCheckInData(request, coachId);
         } finally {
             if (jdbcHelper != null) {

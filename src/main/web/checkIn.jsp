@@ -32,9 +32,32 @@
                             </div>
                             <div class="card-body">
                                 <div class="text-center">
-                                    <!-- 调试信息 -->
-                                    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-size: 12px; border: 1px solid #ccc;">
-                                        调试信息: msg="${msg}", msgType="${msgType}", hasCheckedIn="${hasCheckedIn}", hasCheckedOut="${hasCheckedOut}"
+                                    <!-- 状态信息 -->
+                                    <div class="status-info">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div class="status-text">
+                                                今日签到状态：
+                                                <c:choose>
+                                                    <c:when test="${hasCheckedIn and hasCheckedOut}">
+                                                        <span class="status-completed">✓ 上班已签到，下班已签退</span>
+                                                    </c:when>
+                                                    <c:when test="${hasCheckedIn and not hasCheckedOut}">
+                                                        <span class="status-partial">● 上班已签到，下班未签退</span>
+                                                    </c:when>
+                                                    <c:when test="${not hasCheckedIn and not hasCheckedOut}">
+                                                        <span class="status-none">● 今日尚未签到</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="status-error">● 状态异常</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <div style="font-size: 12px; color: #6c757d;">
+                                                <c:if test="not empty msg">
+                                                    提示：<strong>${msg}</strong>
+                                                </c:if>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <c:if test="not empty msg">
@@ -109,7 +132,7 @@
                                         </div>
                                     </div>
 
-                                    <form method="post" action="${pageContext.request.contextPath}/checkIn" class="checkin-form">
+                                    <form method="post" action="${pageContext.request.contextPath}/checkIn" class="checkin-form" onsubmit="return disableButtonOnSubmit()">
                                         <h5>欢迎回来，${sessionScope.user.name} 教练！</h5>
                                         <div class="checkin-buttons">
                                             <!-- 上班签到按钮 -->
@@ -120,7 +143,7 @@
                                                     </button>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <button type="submit" name="checkType" value="1" class="btn btn-success btn-lg m-r-20">
+                                                    <button type="submit" name="checkType" value="1" class="btn btn-success btn-lg m-r-20" id="checkInBtn">
                                                         <i class="mdi mdi-clock-in"></i> 上班签到
                                                     </button>
                                                 </c:otherwise>
@@ -139,7 +162,7 @@
                                                     </button>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <button type="submit" name="checkType" value="2" class="btn btn-danger btn-lg">
+                                                    <button type="submit" name="checkType" value="2" class="btn btn-danger btn-lg" id="checkOutBtn">
                                                         <i class="mdi mdi-clock-out"></i> 下班签退
                                                     </button>
                                                 </c:otherwise>
@@ -193,6 +216,54 @@
                 </div>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- 失败提示弹窗（模态框） -->
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="failModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="failModalLabel">
+                    <i class="mdi mdi-alert-circle"></i> 操作失败
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="failMsg" style="font-size: 16px; line-height: 1.8;">${msg}</p>
+                <div class="mt-3">
+                    <small class="text-muted">如需帮助，请联系系统管理员</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-danger" onclick="location.reload()">刷新页面</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 警告提示弹窗（模态框） -->
+<div class="modal fade" id="warnModal" tabindex="-1" role="dialog" aria-labelledby="warnModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="warnModalLabel">
+                    <i class="mdi mdi-alert"></i> 操作提醒
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="warnMsg" style="font-size: 16px; line-height: 1.8;">${msg}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -272,6 +343,22 @@
     .label-danger {
         background-color: #d9534f;
     }
+    /* 状态信息响应式样式 */
+    .status-info {
+        background: #f8f9fa;
+        padding: 12px;
+        margin: 15px 0;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+    .status-info .status-text {
+        font-weight: bold;
+    }
+    .status-info .status-completed { color: #28a745; }
+    .status-info .status-partial { color: #ffc107; }
+    .status-info .status-none { color: #dc3545; }
+    .status-info .status-error { color: #17a2b8; }
+
     /* 响应式调整 */
     @media (max-width: 768px) {
         .checkin-buttons button {
@@ -282,6 +369,31 @@
         .card-stat {
             margin-bottom: 15px;
         }
+        .status-info {
+            padding: 8px;
+            font-size: 14px;
+        }
+        .status-info > div {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 8px;
+        }
+        .status-info .status-text {
+            font-size: 16px;
+        }
+    }
+
+    /* 弹窗样式优化 */
+    .modal-content {
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+    }
+    .modal-footer {
+        border-top: none;
     }
 </style>
 
@@ -304,6 +416,38 @@
     // 初始化当前时间并每秒更新
     updateCurrentTime();
     setInterval(updateCurrentTime, 1000);
+
+    // 防重复提交：禁用按钮
+    function disableButtonOnSubmit() {
+        const submitBtn = document.activeElement;
+        if (submitBtn && submitBtn.tagName === 'BUTTON') {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin"></i> 处理中...';
+        }
+        return true;
+    }
+
+    // 页面加载完成后，判断是否需要弹出失败/警告弹窗
+    $(document).ready(function() {
+        const msgType = '${msgType}';
+        const msg = '${msg}';
+
+        // 仅在有失败/警告消息时弹出弹窗
+        if (msg && msg.trim() !== '') {
+            if (msgType === 'danger') {
+                // 失败弹窗
+                $('#failModal').modal('show');
+            } else if (msgType === 'warning') {
+                // 警告弹窗
+                $('#warnModal').modal('show');
+            }
+        }
+
+        // 弹窗关闭后恢复按钮状态
+        $('.modal').on('hidden.bs.modal', function () {
+            $('#checkInBtn, #checkOutBtn').prop('disabled', false);
+        });
+    });
 </script>
 </body>
 </html>

@@ -28,7 +28,7 @@
                                 <li> <a href="${pageContext.request.contextPath}/customer">客户信息</a> </li>
                                 <li> <a href="${pageContext.request.contextPath}/coach">教练信息</a> </li>
                                 <li> <a href="${pageContext.request.contextPath}/schedule">排课管理</a> </li>
-                                <li> <a href="${pageContext.request.contextPath}/schedule?action=view">查看排课</a> </li>
+                                <li> <a href="${pageContext.request.contextPath}/appointment/admin/courses">所有课程安排</a> </li>
                                 <li> <a href="${pageContext.request.contextPath}/appointment/admin/list">预约管理</a> </li>
                             </c:when>
                             <c:when test="${sessionScope.role == 'customer'}">

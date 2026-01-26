@@ -2,14 +2,15 @@ com\hello\dao\CourseDAO.class
 com\hello\servlet\AppointmentServlet.class
 com\hello\dao\CourseAppointmentDAO.class
 com\hello\dao\CustomerDAO.class
+com\hello\test\DatabaseTest.class
 com\hello\service\CustomerService.class
 com\hello\dao\CoachDAO.class
 com\hello\entity\Appointment.class
 com\hello\servlet\UserInfoServlet.class
-com\hello\servlet\ScheduleServlet$ScheduleRecord.class
 com\hello\dao\AdminDAO.class
 com\hello\filter\LoginFilter.class
 com\hello\servlet\CustomerServlet.class
+com\hello\test\ScheduleTest.class
 com\hello\servlet\CheckInServlet$CourseCheckResult.class
 com\hello\utils\JdbcHelper.class
 com\hello\utils\MyUtils.class
@@ -28,7 +29,6 @@ com\hello\service\CoachService.class
 com\hello\servlet\LoginServlet.class
 com\hello\servlet\CaptchaServlet.class
 com\hello\servlet\LogoutServlet.class
-com\hello\servlet\ScheduleServlet$1.class
 com\hello\utils\MD5Util.class
 com\hello\utils\ApiResult.class
 com\hello\servlet\CoachServlet.class

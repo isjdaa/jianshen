@@ -21,11 +21,13 @@ D:\jianshen\src\com\hello\servlet\CoachServlet.java
 D:\jianshen\src\com\hello\dao\CourseDAO.java
 D:\jianshen\src\com\hello\servlet\LogoutServlet.java
 D:\jianshen\src\com\hello\servlet\ScheduleServlet.java
+D:\jianshen\src\com\hello\test\DatabaseTest.java
 D:\jianshen\src\com\hello\dao\AppointmentDAO.java
 D:\jianshen\src\com\hello\utils\BCryptUtil.java
 D:\jianshen\src\com\hello\servlet\AppointmentServlet.java
 D:\jianshen\src\com\hello\utils\MD5Util.java
 D:\jianshen\src\com\hello\utils\vo\PagerVO.java
+D:\jianshen\src\com\hello\test\ScheduleTest.java
 D:\jianshen\src\com\hello\entity\Coach.java
 D:\jianshen\src\com\hello\servlet\IndexServlet.java
 D:\jianshen\src\com\hello\servlet\CustomerServlet.java

@@ -69,6 +69,10 @@ public class AppointmentServlet extends HttpServlet {
         else if (pathInfo.equals("/coach/courses")) {
             handleCoachCourses(req, resp);
         }
+        // 管理员查看所有课程安排
+        else if (pathInfo.equals("/admin/courses")) {
+            handleAdminCourses(req, resp);
+        }
     }
 
     @Override
@@ -303,6 +307,50 @@ public class AppointmentServlet extends HttpServlet {
         req.setAttribute("coursePager", coursePager);
         req.setAttribute("courses", coursePager.getList());
         req.getRequestDispatcher("/WEB-INF/view/appointment-coach-courses.jsp").forward(req, resp);
+    }
+    
+    // 处理管理员查看所有课程安排页面
+    private void handleAdminCourses(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 只有管理员才能查看所有课程
+        boolean hasPermission = MyUtils.hasPermission(req, resp, false, "admin");
+        if (!hasPermission) {
+            return;
+        }
+
+        // 获取分页参数
+        int currentPage = 1;
+        int pageSize = 10;
+        String pageParam = req.getParameter("page");
+        if (pageParam != null && !pageParam.trim().isEmpty()) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
+                currentPage = 1;
+            }
+        }
+
+        // 查询所有课程
+        PagerVO<Course> coursePager = courseDAO.findAll(currentPage, pageSize);
+        // 初始化分页属性
+        coursePager.init();
+
+        // 获取所有教练信息，用于关联课程的教练
+        List<Coach> coaches = coachService.page(1, 100, null, null, null, null).getList();
+        HashMap<String, Coach> coachMap = new HashMap<>();
+        for (Coach coach : coaches) {
+            coachMap.put(coach.getId(), coach);
+        }
+
+        // 为每个课程添加教练信息
+        List<Course> courses = coursePager.getList();
+        for (Course course : courses) {
+            course.setCoach(coachMap.get(course.getCoachId()));
+        }
+
+        req.setAttribute("coursePager", coursePager);
+        req.setAttribute("courses", courses);
+        req.getRequestDispatcher("/WEB-INF/view/appointment-admin-courses.jsp").forward(req, resp);
     }
 
     // 创建教练预约 - 修复BUG1+BUG2+日期校验+所有逻辑漏洞

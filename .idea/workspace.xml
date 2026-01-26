@@ -9,13 +9,33 @@
     <list default="true" id="9d272280-b309-4167-b475-8470467ca6ea" name="默认更改列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/hello/servlet/CheckInServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/hello/servlet/CheckInServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/web/checkIn.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/web/checkIn.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/hello/servlet/ScheduleServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/hello/servlet/ScheduleServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/hello/utils/JdbcHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/hello/utils/JdbcHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/web/WEB-INF/view/_aside_header.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/web/WEB-INF/view/_aside_header.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/web/schedule.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/web/schedule.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hello/entity/Coach.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/entity/Coach.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hello/filter/LoginFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/filter/LoginFilter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/hello/servlet/CheckInServlet$CourseCheckResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/servlet/CheckInServlet$CourseCheckResult.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/hello/servlet/CheckInServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/servlet/CheckInServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hello/servlet/ScheduleServlet$ScheduleRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/servlet/ScheduleServlet$ScheduleRecord.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hello/servlet/ScheduleServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/servlet/ScheduleServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hello/utils/JdbcHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hello/utils/JdbcHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/entity/Coach.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/entity/Coach.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/filter/LoginFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/filter/LoginFilter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/CheckInServlet$CourseCheckResult.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/CheckInServlet$CourseCheckResult.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/CheckInServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/CheckInServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/checkIn.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/checkIn.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/签到功能提示信息说明.md" beforeDir="false" afterPath="$PROJECT_DIR$/签到功能提示信息说明.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/ScheduleServlet$ScheduleRecord.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/ScheduleServlet$ScheduleRecord.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/ScheduleServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/servlet/ScheduleServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/utils/JdbcHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/com/hello/utils/JdbcHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/classes/main/web/checkIn.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/view/_aside_header.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/WEB-INF/view/_aside_header.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/schedule.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/gym-management-1.0.0/schedule.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/uploads/avatars/3eec33d5-6276-4c02-8e76-007027c27a09.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management-1.0.0/uploads/avatars/41f50946-0556-4aab-8170-b4ee8368e14a.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/gym-management.war" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/签到功能提示信息说明.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -279,6 +299,12 @@
       <workItem from="1769149140657" duration="3688000" />
       <workItem from="1769153488773" duration="1567000" />
       <workItem from="1769169351704" duration="2624000" />
+      <workItem from="1769250944263" duration="2992000" />
+      <workItem from="1769320850720" duration="467000" />
+      <workItem from="1769321348349" duration="585000" />
+      <workItem from="1769356051801" duration="1961000" />
+      <workItem from="1769358334454" duration="6921000" />
+      <workItem from="1769442516348" duration="4408000" />
     </task>
     <servers />
   </component>
@@ -310,10 +336,10 @@
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
     <state x="832" y="207" key="#Tomcat_Server/0.0.1920.1032@0.0.1920.1032" timestamp="1767598506013" />
-    <state x="78" y="182" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1769101756871">
+    <state x="78" y="182" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1769253230689">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state x="78" y="182" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1032@0.0.1920.1032" timestamp="1769101756871" />
+    <state x="78" y="182" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1032@0.0.1920.1032" timestamp="1769253230689" />
     <state x="696" y="375" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1768716636260">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
@@ -330,10 +356,10 @@
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
     <state x="216" y="185" key="#com.intellij.j2ee.appServerIntegrations.ApplicationServersConfigurable/0.0.1920.1032@0.0.1920.1032" timestamp="1768737402869" />
-    <state x="690" y="262" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1768761299609">
+    <state x="690" y="262" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1769253217915">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state x="690" y="262" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1032@0.0.1920.1032" timestamp="1768761299609" />
+    <state x="690" y="262" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1032@0.0.1920.1032" timestamp="1769253217915" />
     <state x="527" y="289" key="#项目结构" timestamp="1767595084723">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
@@ -358,54 +384,54 @@
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
     <state x="21" y="208" key="FileChooserDialogImpl/0.0.1920.1032@0.0.1920.1032" timestamp="1768737497795" />
-    <state width="1459" height="236" key="GridCell.Tab.0.bottom" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.0.bottom" timestamp="1769448365026">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.0.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.0.center" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.0.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.0.center" timestamp="1769448365026">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.0.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.0.left" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.0.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.0.left" timestamp="1769448365026">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.0.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.0.right" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.0.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.0.right" timestamp="1769448365026">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.0.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.1.bottom" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.0.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.1.bottom" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.1.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.1.center" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.1.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
+    <state width="1459" height="235" key="GridCell.Tab.1.center" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.1.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.1.left" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.1.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.1.left" timestamp="1769448365026">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.1.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.1.right" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.1.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365026" />
+    <state width="1459" height="235" key="GridCell.Tab.1.right" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.1.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.2.bottom" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.1.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
+    <state width="1459" height="235" key="GridCell.Tab.2.bottom" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.2.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.2.center" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.2.bottom/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
+    <state width="1459" height="235" key="GridCell.Tab.2.center" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.2.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.2.left" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.2.center/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
+    <state width="1459" height="235" key="GridCell.Tab.2.left" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.2.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
-    <state width="1459" height="236" key="GridCell.Tab.2.right" timestamp="1769171990993">
+    <state width="1459" height="235" key="GridCell.Tab.2.left/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
+    <state width="1459" height="235" key="GridCell.Tab.2.right" timestamp="1769448365027">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
-    <state width="1459" height="236" key="GridCell.Tab.2.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769171990993" />
+    <state width="1459" height="235" key="GridCell.Tab.2.right/0.0.1920.1032@0.0.1920.1032" timestamp="1769448365027" />
     <state width="717" height="236" key="GridCell.Tab.3.bottom" timestamp="1769105526533">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
@@ -462,6 +488,17 @@
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
     <state x="624" y="284" width="672" height="678" key="search.everywhere.popup/0.0.1920.1032@0.0.1920.1032" timestamp="1767604244687" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/web/WEB-INF/view/_aside_header.jsp</url>
+          <line>9</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/jianshen$TOMCAT.ic" NAME="TOMCAT Coverage Results" MODIFIED="1767977153314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

@@ -106,29 +106,33 @@ public class JdbcHelper {
      */
     public List<Map<String, Object>> executeQueryToListNoClose(String sql,Object... params){
         List<Map<String, Object>> resultList = new ArrayList<>();
+        PreparedStatement localPstmt = null;
+        ResultSet localRs = null;
         try {
-            pstmt=conn.prepareStatement(sql);
+            localPstmt = conn.prepareStatement(sql);
             if(params!=null){
                 for(int i=0; i<params.length;i++) {
-                    pstmt.setObject(i+1, params[i]);
+                    localPstmt.setObject(i+1, params[i]);
                 }
             }
-            rs=pstmt.executeQuery();
+            localRs = localPstmt.executeQuery();
 
-            ResultSetMetaData metaData = rs.getMetaData();
+            ResultSetMetaData metaData = localRs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
-            while(rs.next()){
+            while(localRs.next()){
                 Map<String, Object> rowMap = new HashMap<>();
                 for(int i=1; i<=columnCount; i++){
                     String columnName = metaData.getColumnName(i);
-                    Object columnValue = rs.getObject(i);
+                    Object columnValue = localRs.getObject(i);
                     rowMap.put(columnName, columnValue);
                 }
                 resultList.add(rowMap);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("SQL查询执行失败: " + e.getMessage());
+            System.out.println("SQL语句: " + sql);
         }
         // 不关闭连接！！！
         return resultList;

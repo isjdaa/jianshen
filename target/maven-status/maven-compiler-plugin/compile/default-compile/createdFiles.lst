@@ -10,6 +10,7 @@ com\hello\servlet\ScheduleServlet$ScheduleRecord.class
 com\hello\dao\AdminDAO.class
 com\hello\filter\LoginFilter.class
 com\hello\servlet\CustomerServlet.class
+com\hello\servlet\CheckInServlet$CourseCheckResult.class
 com\hello\utils\JdbcHelper.class
 com\hello\utils\MyUtils.class
 com\hello\dao\AppointmentDAO.class

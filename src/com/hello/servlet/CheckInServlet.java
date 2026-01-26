@@ -64,7 +64,19 @@ public class CheckInServlet extends HttpServlet {
 
         // 1. 登录校验
         HttpSession session = request.getSession();
-        Coach coach = (Coach) session.getAttribute("user");
+        String userRole = (String) session.getAttribute("role");
+        Object userObj = session.getAttribute("user");
+
+        // 检查用户角色
+        if (!"coach".equals(userRole)) {
+            System.out.println("[签到] 非教练用户尝试访问签到功能");
+            request.setAttribute("msg", "只有教练才能使用签到功能");
+            request.setAttribute("msgType", "danger");
+            request.getRequestDispatcher("/WEB-INF/view/userinfo.jsp").forward(request, response);
+            return;
+        }
+
+        Coach coach = (Coach) userObj;
         System.out.println("[签到] session user: " + coach);
 
         if (coach == null || coach.getId() == null || coach.getId().trim().isEmpty()) {
@@ -223,7 +235,19 @@ public class CheckInServlet extends HttpServlet {
 
         // 登录校验
         HttpSession session = request.getSession();
-        Coach coach = (Coach) session.getAttribute("user");
+        String userRole = (String) session.getAttribute("role");
+        Object userObj = session.getAttribute("user");
+
+        // 检查用户角色
+        if (!"coach".equals(userRole)) {
+            System.out.println("[签到] GET请求非教练用户尝试访问签到功能");
+            request.setAttribute("msg", "只有教练才能使用签到功能");
+            request.setAttribute("msgType", "danger");
+            request.getRequestDispatcher("/WEB-INF/view/userinfo.jsp").forward(request, response);
+            return;
+        }
+
+        Coach coach = (Coach) userObj;
         System.out.println("[签到] GET请求session中的user: " + coach);
 
         if (coach == null || coach.getId() == null || coach.getId().trim().isEmpty()) {

@@ -348,6 +348,9 @@ public class AppointmentServlet extends HttpServlet {
             course.setCoach(coachMap.get(course.getCoachId()));
         }
 
+        // 自动更新课程状态
+        updateCourseStatuses(courses);
+
         req.setAttribute("coursePager", coursePager);
         req.setAttribute("courses", courses);
         req.getRequestDispatcher("/WEB-INF/view/appointment-admin-courses.jsp").forward(req, resp);
@@ -713,6 +716,42 @@ public class AppointmentServlet extends HttpServlet {
                 return "cancelled";
             default:
                 return status;
+        }
+    }
+
+    // 自动更新课程状态
+    private void updateCourseStatuses(List<Course> courses) {
+        Date now = new Date();
+        long currentTime = now.getTime();
+        long thirtyMinutesInMillis = 30 * 60 * 1000; // 30分钟（毫秒）
+
+        for (Course course : courses) {
+            if (course.getCourseTime() != null) {
+                long courseTime = course.getCourseTime().getTime();
+                long timeDiff = courseTime - currentTime;
+
+                // 如果课程时间在当前时间之前，则状态为"已完成"
+                if (timeDiff < 0) {
+                    if (!"已完成".equals(course.getStatus())) {
+                        course.setStatus("已完成");
+                        courseDAO.update(course);
+                    }
+                }
+                // 如果课程时间在当前时间之后30分钟内，则状态为"进行中"
+                else if (timeDiff <= thirtyMinutesInMillis) {
+                    if (!"进行中".equals(course.getStatus())) {
+                        course.setStatus("进行中");
+                        courseDAO.update(course);
+                    }
+                }
+                // 如果课程时间在当前时间之后30分钟以上，则状态为"未开始"
+                else {
+                    if (!"未开始".equals(course.getStatus())) {
+                        course.setStatus("未开始");
+                        courseDAO.update(course);
+                    }
+                }
+            }
         }
     }
 }

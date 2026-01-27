@@ -73,14 +73,20 @@
                                                                 <td>${course.currentStudents}</td>
                                                                 <td>
                                                                     <c:choose>
-                                                                        <c:when test="${course.status == 'active'}">
+                                                                        <c:when test="${course.status == '未开始'}">
+                                                                            <span class="label label-info">未开始</span>
+                                                                        </c:when>
+                                                                        <c:when test="${course.status == '进行中'}">
+                                                                            <span class="label label-success">进行中</span>
+                                                                        </c:when>
+                                                                        <c:when test="${course.status == '已完成'}">
+                                                                            <span class="label label-default">已完成</span>
+                                                                        </c:when>
+                                                                        <c:when test="${course.status == '已发布'}">
                                                                             <span class="label label-success">已发布</span>
                                                                         </c:when>
-                                                                        <c:when test="${course.status == 'inactive'}">
+                                                                        <c:when test="${course.status == '未发布'}">
                                                                             <span class="label label-warning">未发布</span>
-                                                                        </c:when>
-                                                                        <c:when test="${course.status == 'completed'}">
-                                                                            <span class="label label-info">已完成</span>
                                                                         </c:when>
                                                                         <c:otherwise>
                                                                             <span class="label label-default">${course.status}</span>

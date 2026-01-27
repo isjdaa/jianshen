@@ -115,6 +115,9 @@ public class ScheduleServlet extends HttpServlet {
         // 初始化分页属性
         coursePager.init();
 
+        // 自动更新课程状态
+        updateCourseStatuses(coursePager.getList());
+
         // 获取所有教练信息，用于在列表中显示教练姓名
         List<Coach> allCoaches = coachService.page(1, 100, null, null, null, null).getList();
         req.setAttribute("allCoaches", allCoaches);
@@ -202,15 +205,13 @@ public class ScheduleServlet extends HttpServlet {
 
         // 执行删除操作
         try {
-            // 这里需要添加删除课程的代码，假设CourseDAO有delete方法
-            // 由于当前CourseDAO没有delete方法，这里暂时注释掉
-            // int result = courseDAO.delete(id);
-            // if (result > 0) {
-            //     out.print(ApiResult.json(true, "课程删除成功"));
-            // } else {
-            //     out.print(ApiResult.json(false, "课程删除失败"));
-            // }
-            out.print(ApiResult.json(false, "删除功能暂未实现"));
+            // 调用CourseDAO的delete方法删除课程
+            int result = courseDAO.delete(id);
+            if (result > 0) {
+                out.print(ApiResult.json(true, "课程删除成功"));
+            } else {
+                out.print(ApiResult.json(false, "课程删除失败"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             out.print(ApiResult.json(false, "删除课程失败：" + e.getMessage()));
@@ -270,7 +271,7 @@ public class ScheduleServlet extends HttpServlet {
             course.setDuration(duration);
             course.setMaxStudents(maxStudents);
             course.setCurrentStudents(0);
-            course.setStatus("active"); // 默认状态为已发布
+            course.setStatus("未开始"); // 默认状态为未开始
             course.setDescription(description);
 
             // 保存课程
@@ -376,6 +377,42 @@ public class ScheduleServlet extends HttpServlet {
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    // 自动更新课程状态
+    private void updateCourseStatuses(List<Course> courses) {
+        Date now = new Date();
+        long currentTime = now.getTime();
+        long thirtyMinutesInMillis = 30 * 60 * 1000; // 30分钟（毫秒）
+
+        for (Course course : courses) {
+            if (course.getCourseTime() != null) {
+                long courseTime = course.getCourseTime().getTime();
+                long timeDiff = courseTime - currentTime;
+
+                // 如果课程时间在当前时间之前，则状态为"已完成"
+                if (timeDiff < 0) {
+                    if (!"已完成".equals(course.getStatus())) {
+                        course.setStatus("已完成");
+                        courseDAO.update(course);
+                    }
+                }
+                // 如果课程时间在当前时间之后30分钟内，则状态为"进行中"
+                else if (timeDiff <= thirtyMinutesInMillis) {
+                    if (!"进行中".equals(course.getStatus())) {
+                        course.setStatus("进行中");
+                        courseDAO.update(course);
+                    }
+                }
+                // 如果课程时间在当前时间之后30分钟以上，则状态为"未开始"
+                else {
+                    if (!"未开始".equals(course.getStatus())) {
+                        course.setStatus("未开始");
+                        courseDAO.update(course);
+                    }
+                }
+            }
         }
     }
 }

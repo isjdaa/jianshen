@@ -144,4 +144,15 @@ public class CourseDAO {
         course.setDescription(resultSet.getString("description"));
         return course;
     }
+
+    // 删除课程
+    public int delete(String id) {
+        JdbcHelper helper = new JdbcHelper();
+        int res = helper.executeUpdate(
+                "delete from tb_course where id = ?",
+                id
+        );
+        helper.closeDB();
+        return res;
+    }
 }
